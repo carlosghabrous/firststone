@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
 const minimumArgumentsNumber int = 1
@@ -18,7 +20,11 @@ func main() {
 		help_cmd()
 
 	} else if command == "init" {
-		init_cmd(os.Args[2:])
+		err := init_cmd(os.Args[2:])
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
 	} else {
 		fmt.Println("unknown command")
@@ -47,18 +53,47 @@ func init_cmd(commandsAndFlags []string) error {
 		return err
 	}
 
-	defer os.RemoveAll(projectName)
-
 	if language == "python" {
-		fmt.Println("Making python project")
+		cwd, err := os.Getwd()
+		if err != nil {
+			fmt.Println("Could not get current working directory!")
+			os.Exit(1)
+		}
+
+		err = recursiveCopy(cwd, filepath.Join("_languages", language))
+		if err != nil {
+			fmt.Println("Error while copying files")
+		}
 
 	} else if language == "go" {
-		fmt.Println("Making go project")
+		cwd, err := os.Getwd()
+		if err != nil {
+			fmt.Println("Could not get current working directory!")
+			os.Exit(1)
+		}
+
+		err = recursiveCopy(cwd, filepath.Join("_languages", language))
+		if err != nil {
+			fmt.Println("Error while copying files")
+		}
 
 	} else {
 		fmt.Println("Language not supported")
 		os.Exit(1)
 	}
 
+	return nil
+}
+
+func recursiveCopy(dest, src string) error {
+	fmt.Println("reading directory ", src)
+	files, err := ioutil.ReadDir(src)
+	if err != nil {
+		fmt.Println("Something very wrong happened!")
+	}
+
+	for _, entry := range files {
+		fmt.Println(entry.Name())
+	}
 	return nil
 }
