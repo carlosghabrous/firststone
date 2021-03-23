@@ -2,17 +2,16 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
-	"path/filepath"
 )
 
 const minimumArgumentsNumber int = 1
 
 func main() {
 	if len(os.Args[1:]) < minimumArgumentsNumber {
-		fmt.Println("Cannot do anything with that!")
-		fmt.Println("Print help/usage or whatever")
+		fmt.Println("Cannot do anything without arguments!")
+		help_cmd()
+		os.Exit(1)
 	}
 
 	command := os.Args[1]
@@ -28,30 +27,23 @@ func main() {
 
 	} else {
 		fmt.Println("unknown command")
-		fmt.Println("Print help/usage or whatever")
+		help_cmd()
 		os.Exit(1)
 	}
 
 }
 
 func help_cmd() {
-	usage := "firststone <command> [flags] <project-name> <language>"
-	usage += "Available commands:"
-	usage += "init -> starts project"
-	usage += "help -> prints this or a command's help"
+	usage := "firststone <command> [flags] <project-name> <language>\n" +
+		"Available commands:\n" +
+		"init -> starts project\n" +
+		"help -> prints this or a command's help\n"
+
 	fmt.Println(usage)
 }
 
 func init_cmd(commandsAndFlags []string) error {
-	fmt.Println("Execute init command with arguments", commandsAndFlags)
 	projectName, language := commandsAndFlags[0], commandsAndFlags[1]
-	defaultPermissions := 0755
-
-	err := os.Mkdir(projectName, os.FileMode(defaultPermissions))
-	if err != nil {
-		fmt.Println("Error while creating directory ", projectName)
-		return err
-	}
 
 	if language == "python" {
 		cwd, err := os.Getwd()
@@ -60,7 +52,7 @@ func init_cmd(commandsAndFlags []string) error {
 			os.Exit(1)
 		}
 
-		err = recursiveCopy(cwd, filepath.Join("_languages", language))
+		err = initProject(cwd, language, projectName)
 		if err != nil {
 			fmt.Println("Error while copying files")
 		}
@@ -72,7 +64,7 @@ func init_cmd(commandsAndFlags []string) error {
 			os.Exit(1)
 		}
 
-		err = recursiveCopy(cwd, filepath.Join("_languages", language))
+		err = initProject(cwd, language, projectName)
 		if err != nil {
 			fmt.Println("Error while copying files")
 		}
@@ -85,15 +77,7 @@ func init_cmd(commandsAndFlags []string) error {
 	return nil
 }
 
-func recursiveCopy(dest, src string) error {
-	fmt.Println("reading directory ", src)
-	files, err := ioutil.ReadDir(src)
-	if err != nil {
-		fmt.Println("Something very wrong happened!")
-	}
+func initProject(dest, language, projectName string) error {
 
-	for _, entry := range files {
-		fmt.Println(entry.Name())
-	}
 	return nil
 }
