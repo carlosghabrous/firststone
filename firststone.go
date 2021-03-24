@@ -3,23 +3,22 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/carlosghabrous/firststone/commands"
 )
 
 const minimumArgumentsNumber int = 2
 
-type FirstStoneCommand struct {
-	cmdName string
-}
-
-func (fsCmd FirstStoneCommand) run(cmdFlagsSubs ...string) {
-	fmt.Printf("Running command %v\n", fsCmd.cmdName)
-}
-
-var commandsRegistry = make(map[string]FirstStoneCommand)
+var commandsRegistry = make(map[string]commands.FirstStoneCommand)
 
 func init() {
-	commandsRegistry["init"] = FirstStoneCommand{cmdName: "init"}
-	commandsRegistry["help"] = FirstStoneCommand{cmdName: "help"}
+	var c commands.FirstStoneCommand
+
+	c = commands.NewInitCmd()
+	commandsRegistry[c.CmdName()] = c
+
+	c = commands.NewHelpCmd()
+	commandsRegistry[c.CmdName()] = c
 }
 
 func main() {
@@ -28,7 +27,7 @@ func main() {
 
 	if len(os.Args) < minimumArgumentsNumber {
 		fmt.Println("Missing command!")
-		helpCommand.run()
+		helpCommand.Run()
 		os.Exit(1)
 	}
 
@@ -37,11 +36,14 @@ func main() {
 
 	if !ok {
 		fmt.Printf("Unknown command %v\n", commandName)
-		helpCommand.run()
+		helpCommand.Run()
 		os.Exit(1)
 	}
 
-	command.run(os.Args[2:]...)
+	err := command.Run(os.Args[2:]...)
+	if err != nil {
+		fmt.Printf("Error while running command %v: %v\n", command.CmdName(), err)
+	}
 }
 
 // command := os.Args[1]
