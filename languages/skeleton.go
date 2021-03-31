@@ -1,16 +1,21 @@
 package languages
 
+import (
+	"fmt"
+	"os"
+)
+
 type void struct{}
 type languagesSet map[string]void
-type ProjectItem struct {
-	name           string
-	permissions    string
-	content        string
-	parentDir      string
-	createFunc     func(itemName, itemPermissions, itemParentDir string) error
-	addContentFunc func(itemName, itemContent string) error
+type projectItem struct {
+	Name              string
+	permissions       os.FileMode
+	Content           string
+	ParentDir         string
+	CreateParentFunc  func(itemName string, perm os.FileMode) error              //TODO: replace by interface
+	CreateContentFunc func(itemName string, data []byte, perm os.FileMode) error //TODO: replace by interface
 }
-type Project map[string]ProjectItem
+type Project map[string]projectItem
 
 var member void
 var supportedLanguages languagesSet = make(languagesSet)
@@ -34,10 +39,29 @@ func IsSupportedLanguage(language string) bool {
 // Runs predefined actions to create a project in a certain language
 func CreateProject(language string) error {
 	projectItems := languageProjectItems[language]
+	fmt.Printf("projectItems contains %v\n", projectItems)
+
 	for _, projectItem := range projectItems {
-		projectItem.createFunc(projectItem.name, projectItem.permissions, projectItem.parentDir)
-		projectItem.addContentFunc(projectItem.name, projectItem.content)
+		projectItem.CreateParentFunc(projectItem.Name, projectItem.permissions)
+		projectItem.CreateContentFunc(projectItem.Name, []byte(projectItem.Content), projectItem.permissions)
 	}
 
 	return nil
+}
+
+func addProjectItem(language string, projectItem projectItem) error {
+	_, ok := languageProjectItems[language]
+
+	if !ok {
+		languageProjectItems[language][projectItem.Name] = projectItem
+		return nil
+	}
+
+	item, ok := languageProjectItems[language][projectItem.Name]
+	if !ok {
+		languageProjectItems[language][projectItem.Name] = item
+		return nil
+	}
+
+	return fmt.Errorf("Project item %v already exists!\n", item.Name)
 }

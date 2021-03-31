@@ -74,8 +74,6 @@ func cleanCmd(commands ...string) {
 		os.Exit(1)
 	}
 
-	// languages.RunActions(projectLanguage)
-
 }
 
 func unpackArgs(args ...string) (string, string) {
