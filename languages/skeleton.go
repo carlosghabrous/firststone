@@ -6,7 +6,9 @@ import (
 )
 
 type void struct{}
+
 type languagesSet map[string]void
+
 type projectItem struct {
 	Name              string
 	permissions       os.FileMode
@@ -15,15 +17,32 @@ type projectItem struct {
 	CreateParentFunc  func(itemName string, perm os.FileMode) error              //TODO: replace by interface
 	CreateContentFunc func(itemName string, data []byte, perm os.FileMode) error //TODO: replace by interface
 }
+
+// Maps project item name to projectItem
 type Project map[string]projectItem
 
-var member void
-var supportedLanguages languagesSet = make(languagesSet)
-var languageProjectItems = make(map[string]Project)
+// Maps languages to Projects
+type Projects map[string]Project
 
-func init() {
-	supportedLanguages["python"] = member
-	supportedLanguages["go"] = member
+var member void
+
+var supportedLanguages = make(languagesSet)
+
+var projectsMetaData = make(Projects)
+
+func (pMetaData Projects) addProject(language string, project Project) {
+
+	if _, ok := pMetaData[language]; !ok {
+		pMetaData[language] = project
+	}
+}
+
+func (ls languagesSet) addLanguage(language string) {
+
+	if _, ok := ls[language]; !ok {
+		ls[language] = member
+		fmt.Printf("Language %v added\n", language)
+	}
 }
 
 // Checks whether a language is supported by the project
@@ -38,10 +57,10 @@ func IsSupportedLanguage(language string) bool {
 
 // Runs predefined actions to create a project in a certain language
 func CreateProject(language string) error {
-	projectItems := languageProjectItems[language]
-	fmt.Printf("projectItems contains %v\n", projectItems)
+	project := projectsMetaData[language]
+	fmt.Printf("project contains %v\n", project)
 
-	for _, projectItem := range projectItems {
+	for _, projectItem := range project {
 		projectItem.CreateParentFunc(projectItem.Name, projectItem.permissions)
 		projectItem.CreateContentFunc(projectItem.Name, []byte(projectItem.Content), projectItem.permissions)
 	}
@@ -50,16 +69,16 @@ func CreateProject(language string) error {
 }
 
 func addProjectItem(language string, projectItem projectItem) error {
-	_, ok := languageProjectItems[language]
+	_, ok := projectsMetaData[language]
 
 	if !ok {
-		languageProjectItems[language][projectItem.Name] = projectItem
+		projectsMetaData[language][projectItem.Name] = projectItem
 		return nil
 	}
 
-	item, ok := languageProjectItems[language][projectItem.Name]
+	item, ok := projectsMetaData[language][projectItem.Name]
 	if !ok {
-		languageProjectItems[language][projectItem.Name] = item
+		projectsMetaData[language][projectItem.Name] = item
 		return nil
 	}
 
