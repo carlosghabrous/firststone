@@ -26,15 +26,16 @@ type Projects map[string]Project
 
 var member void
 
-var supportedLanguages = make(languagesSet)
+var supportedLanguages languagesSet = make(languagesSet)
 
-var projectsMetaData = make(Projects)
+var projectsMetaData Projects = make(Projects)
 
 func (pMetaData Projects) addProject(language string, project Project) {
+	fmt.Printf("Adding project %v for language %v\n", project, language)
+	pMetaData[language] = project
 
-	if _, ok := pMetaData[language]; !ok {
-		pMetaData[language] = project
-	}
+	// if _, ok := pMetaData[language]; !ok {
+	// }
 }
 
 func (ls languagesSet) addLanguage(language string) {
@@ -56,31 +57,50 @@ func IsSupportedLanguage(language string) bool {
 }
 
 // Runs predefined actions to create a project in a certain language
-func CreateProject(language string) error {
+func CreateProject(name, language string) error {
+
+	switch language {
+	case "python":
+		pythonProjectMeta.SetProjectMeta(name)
+
+		break
+
+	// case "go":
+	// 	goProjectName.SetProjectName(name)
+
+	default:
+		break
+	}
+
+	buildProject()
 	project := projectsMetaData[language]
-	fmt.Printf("project contains %v\n", project)
+	fmt.Printf("getting project: %v\n", project)
 
 	for _, projectItem := range project {
-		projectItem.CreateParentFunc(projectItem.Name, projectItem.permissions)
+		fmt.Println("here")
+		if projectItem.ParentDir != "." {
+			projectItem.CreateParentFunc(projectItem.Name, projectItem.permissions)
+		}
+		fmt.Printf("projectItem's content is %v\n", projectItem.Content)
 		projectItem.CreateContentFunc(projectItem.Name, []byte(projectItem.Content), projectItem.permissions)
 	}
 
 	return nil
 }
 
-func addProjectItem(language string, projectItem projectItem) error {
-	_, ok := projectsMetaData[language]
+// func addProjectItem(language string, projectItem projectItem) error {
+// 	_, ok := projectsMetaData[language]
 
-	if !ok {
-		projectsMetaData[language][projectItem.Name] = projectItem
-		return nil
-	}
+// 	if !ok {
+// 		projectsMetaData[language][projectItem.Name] = projectItem
+// 		return nil
+// 	}
 
-	item, ok := projectsMetaData[language][projectItem.Name]
-	if !ok {
-		projectsMetaData[language][projectItem.Name] = item
-		return nil
-	}
+// 	item, ok := projectsMetaData[language][projectItem.Name]
+// 	if !ok {
+// 		projectsMetaData[language][projectItem.Name] = item
+// 		return nil
+// 	}
 
-	return fmt.Errorf("Project item %v already exists!\n", item.Name)
-}
+// 	return fmt.Errorf("Project item %v already exists!\n", item.Name)
+// }

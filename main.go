@@ -54,7 +54,7 @@ func initCmd(commands ...string) {
 		os.Exit(1)
 	}
 
-	languages.CreateProject(projectLanguage)
+	languages.CreateProject(projectName, projectLanguage)
 }
 
 func helpCmd(commands ...string) {
