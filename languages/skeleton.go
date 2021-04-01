@@ -1,54 +1,65 @@
+// TODO: change file's name
+// TODO: error handling
 package languages
 
 import (
-	"fmt"
 	"os"
 	"path"
 )
 
+// void is an empty struct, used to implement a set type using a map
+//TODO: not necessary
 type void struct{}
 
+// languageSet is used to implement a set
+//TODO: not necessary
 type languagesSet map[string]void
 
-//TODO: fields don't need to be public
+// projectItem provides the description of each item (file or directory) that belong to a project
+//TODO: members do not need to be public
 type projectItem struct {
-	Name              string
-	Permissions       os.FileMode
-	Content           string
-	ParentDir         string
-	CreateParentFunc  func(itemName string, perm os.FileMode) error              //TODO: replace by interface
-	CreateContentFunc func(itemName string, data []byte, perm os.FileMode) error //TODO: replace by interface
+	Name              string                                                     // Item's name
+	Permissions       os.FileMode                                                // Item's permissions (0644 for files, 0755 for directories)
+	Content           string                                                     // Item's content
+	ParentDir         string                                                     // Item's parent directory
+	CreateParentFunc  func(itemName string, perm os.FileMode) error              // Function signature to create the item's parent
+	CreateContentFunc func(itemName string, data []byte, perm os.FileMode) error // Function signature to create the item's content
 }
 
-// Maps project item name to projectItem
+// Project is a collection of projectItems, addressed by a name
 type Project map[string]projectItem
 
 // Maps languages to Projects
+//TODO: change name
 type Projects map[string]Project
 
-var member void
+// emptyValue is a var of type void(struct{}) used in the set implementation
+//TODO: not necessary
+var emptyValue void
 
+// supportedLanguages contains the languages supported by firststone
+//TODO: not necessary
 var supportedLanguages languagesSet = make(languagesSet)
 
+// projectsMetaData maps languages to Projects (collection of projectItems)
+//TODO: change name
 var projectsMetaData Projects = make(Projects)
 
-func (pMetaData Projects) addProject(language string, project Project) {
-	fmt.Printf("Adding project %v for language %v\n", project, language)
-	pMetaData[language] = project
-
-	// if _, ok := pMetaData[language]; !ok {
-	// }
-}
-
+// addLanguage adds a language to the supportedLanguages set. It is used from the individual languages' modules
 func (ls languagesSet) addLanguage(language string) {
 
 	if _, ok := ls[language]; !ok {
-		ls[language] = member
-		fmt.Printf("Language %v added\n", language)
+		ls[language] = emptyValue
 	}
 }
 
-// Checks whether a language is supported by the project
+// addProject is used to add a correspondance between a language and a Project(collection of projectItems)
+func (pMetaData Projects) addProject(language string, project Project) {
+	pMetaData[language] = project
+}
+
+// IsSupportedLanguage checks whether a language is supported by the project
+//TODO: not necessary. CreateProject does a check on languages too. Could use it to check that a language is supported
 func IsSupportedLanguage(language string) bool {
 	_, ok := supportedLanguages[language]
 	if !ok {
@@ -58,12 +69,15 @@ func IsSupportedLanguage(language string) bool {
 	return true
 }
 
-// Runs predefined actions to create a project in a certain language
+// CreateProject runs predefined actions to create a project of a certain language
+// TODO: refactor
+// 1. replace switch/case by a map of language a type. This type should contain two members, one the SetProjectMeta function and the other
+// the buildProject function
 func CreateProject(name, language string) error {
 
 	switch language {
 	case "python":
-		pythonProjectMeta.SetProjectMeta(name)
+		pythonProjectMetaData.setProjectMetaData(name)
 
 		break
 
@@ -88,6 +102,7 @@ func CreateProject(name, language string) error {
 	return nil
 }
 
+// dirExists checks whether a directory exists already
 func dirExists(directory string) bool {
 	if _, err := os.Stat(directory); os.IsNotExist(err) {
 		return false
@@ -95,20 +110,3 @@ func dirExists(directory string) bool {
 
 	return true
 }
-
-// func addProjectItem(language string, projectItem projectItem) error {
-// 	_, ok := projectsMetaData[language]
-
-// 	if !ok {
-// 		projectsMetaData[language][projectItem.Name] = projectItem
-// 		return nil
-// 	}
-
-// 	item, ok := projectsMetaData[language][projectItem.Name]
-// 	if !ok {
-// 		projectsMetaData[language][projectItem.Name] = item
-// 		return nil
-// 	}
-
-// 	return fmt.Errorf("Project item %v already exists!\n", item.Name)
-// }

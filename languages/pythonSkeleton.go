@@ -7,22 +7,32 @@ import (
 	"strings"
 )
 
+// moduleLanguage contains the programming language of projects that will be created
 const moduleLanguage string = "python"
 
-type projectMeta struct {
-	ProjectName string
+// projectMetaData contains project meta data (duh)
+type projectMetaData struct {
+	projectName string // Project's name
+	author      string // Project's author
 }
 
-var pythonProjectMeta projectMeta
+// pythonProjectMetaData is a variable of type projectMetaData
+var pythonProjectMetaData projectMetaData
 
-func (pn *projectMeta) SetProjectMeta(name string) {
-	pn.ProjectName = name
+// setProjectMetaData sets data necessary for the project
+// TODO: set author, what else?
+// TODO: author should always be me. Implement default value for parameter author
+func (pn *projectMetaData) setProjectMetaData(name string) {
+	pn.projectName = name
 }
 
+// init registers that this module's language is available
 func init() {
 	supportedLanguages.addLanguage(moduleLanguage)
 }
 
+// buildProject constructs a variable of type Project with all necessary projectItems
+// TODO: CreateParentFunc and CreateContentFunc should contain these functions by default, instead of repeating them every time
 func buildProject() {
 	pythonProject := Project{
 		"setup": projectItem{
@@ -33,7 +43,7 @@ func buildProject() {
 			CreateParentFunc:  os.Mkdir,
 			CreateContentFunc: ioutil.WriteFile},
 
-		"README": projectItem{
+		"readme": projectItem{
 			Name:              "README.md",
 			Permissions:       0644,
 			Content:           readMeContent(),
@@ -45,7 +55,7 @@ func buildProject() {
 			Name:              "__init__.py",
 			Permissions:       0644,
 			Content:           initPyContent(),
-			ParentDir:         pythonProjectMeta.ProjectName,
+			ParentDir:         pythonProjectMetaData.projectName,
 			CreateParentFunc:  os.Mkdir,
 			CreateContentFunc: ioutil.WriteFile,
 		},
@@ -54,16 +64,16 @@ func buildProject() {
 			Name:              "__init__.py",
 			Permissions:       0644,
 			Content:           "",
-			ParentDir:         path.Join(pythonProjectMeta.ProjectName, "tests"),
+			ParentDir:         path.Join(pythonProjectMetaData.projectName, "tests"),
 			CreateParentFunc:  os.Mkdir,
 			CreateContentFunc: ioutil.WriteFile,
 		},
 
 		"testProject": projectItem{
-			Name:              "test_" + pythonProjectMeta.ProjectName + ".py",
+			Name:              "test_" + pythonProjectMetaData.projectName + ".py",
 			Permissions:       0644,
 			Content:           testProjectContent(),
-			ParentDir:         path.Join(pythonProjectMeta.ProjectName, "tests"),
+			ParentDir:         path.Join(pythonProjectMetaData.projectName, "tests"),
 			CreateParentFunc:  os.Mkdir,
 			CreateContentFunc: ioutil.WriteFile,
 		},
@@ -74,7 +84,7 @@ func buildProject() {
 }
 
 func setupContent() string {
-	content := "this is the project's " + pythonProjectMeta.ProjectName + "setup.py content"
+	content := "this is the project's " + pythonProjectMetaData.projectName + "setup.py content"
 	return content
 }
 
@@ -85,7 +95,7 @@ func readMeContent() string {
 
 func initPyContent() string {
 	content := []string{"'''",
-		"Documentation for the " + pythonProjectMeta.ProjectName + " package",
+		"Documentation for the " + pythonProjectMetaData.projectName + " package",
 		"'''",
 		"__version__ = '0.0.1.dev0'",
 	}
@@ -96,9 +106,9 @@ func testProjectContent() string {
 	content := []string{"'''",
 		"High-level tests for the  package.",
 		"'''",
-		"import " + pythonProjectMeta.ProjectName,
+		"import " + pythonProjectMetaData.projectName,
 		"def test_version():",
-		"\tassert " + pythonProjectMeta.ProjectName + ".__version__ is not None",
+		"\tassert " + pythonProjectMetaData.projectName + ".__version__ is not None",
 	}
 
 	return strings.Join(content, "\n")
