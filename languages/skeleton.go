@@ -3,15 +3,17 @@ package languages
 import (
 	"fmt"
 	"os"
+	"path"
 )
 
 type void struct{}
 
 type languagesSet map[string]void
 
+//TODO: fields don't need to be public
 type projectItem struct {
 	Name              string
-	permissions       os.FileMode
+	Permissions       os.FileMode
 	Content           string
 	ParentDir         string
 	CreateParentFunc  func(itemName string, perm os.FileMode) error              //TODO: replace by interface
@@ -74,18 +76,24 @@ func CreateProject(name, language string) error {
 
 	buildProject()
 	project := projectsMetaData[language]
-	fmt.Printf("getting project: %v\n", project)
 
 	for _, projectItem := range project {
-		fmt.Println("here")
-		if projectItem.ParentDir != "." {
-			projectItem.CreateParentFunc(projectItem.Name, projectItem.permissions)
+		if !dirExists(projectItem.ParentDir) {
+			projectItem.CreateParentFunc(projectItem.ParentDir, 0755)
 		}
-		fmt.Printf("projectItem's content is %v\n", projectItem.Content)
-		projectItem.CreateContentFunc(projectItem.Name, []byte(projectItem.Content), projectItem.permissions)
+
+		projectItem.CreateContentFunc(path.Join(projectItem.ParentDir, projectItem.Name), []byte(projectItem.Content), projectItem.Permissions)
 	}
 
 	return nil
+}
+
+func dirExists(directory string) bool {
+	if _, err := os.Stat(directory); os.IsNotExist(err) {
+		return false
+	}
+
+	return true
 }
 
 // func addProjectItem(language string, projectItem projectItem) error {
