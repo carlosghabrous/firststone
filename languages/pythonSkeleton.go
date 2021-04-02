@@ -51,6 +51,14 @@ func buildProject() {
 			CreateParentFunc:  os.Mkdir,
 			CreateContentFunc: ioutil.WriteFile},
 
+		"license": projectItem{
+			Name:              "LICENSE",
+			Permissions:       0644,
+			Content:           "",
+			ParentDir:         ".",
+			CreateParentFunc:  os.Mkdir,
+			CreateContentFunc: ioutil.WriteFile},
+
 		"init": projectItem{
 			Name:              "__init__.py",
 			Permissions:       0644,
