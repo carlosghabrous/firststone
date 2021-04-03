@@ -1,4 +1,3 @@
-// TODO: change file's name
 // TODO: error handling
 package skeletons
 
@@ -19,8 +18,8 @@ type projectItem struct {
 	CreateContentFunc func(itemName string, data []byte, perm os.FileMode) error // Function signature to create the item's content
 }
 
-// Project is a collection of projectItems, addressed by a name
-type Project map[string]projectItem
+// Project is a collection of projectItems
+type Project []projectItem
 
 // Maps languages to Projects
 //TODO: change name

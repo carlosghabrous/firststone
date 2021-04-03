@@ -35,7 +35,7 @@ func init() {
 // TODO: CreateParentFunc and CreateContentFunc should contain these functions by default, instead of repeating them every time
 func buildProject() {
 	pythonProject := Project{
-		"setup": projectItem{
+		projectItem{
 			Name:              "setup.py",
 			Permissions:       0644,
 			Content:           setupContent(),
@@ -43,7 +43,7 @@ func buildProject() {
 			CreateParentFunc:  os.Mkdir,
 			CreateContentFunc: ioutil.WriteFile},
 
-		"readme": projectItem{
+		projectItem{
 			Name:              "README.md",
 			Permissions:       0644,
 			Content:           readMeContent(),
@@ -51,7 +51,7 @@ func buildProject() {
 			CreateParentFunc:  os.Mkdir,
 			CreateContentFunc: ioutil.WriteFile},
 
-		"license": projectItem{
+		projectItem{
 			Name:              "LICENSE",
 			Permissions:       0644,
 			Content:           "",
@@ -59,7 +59,7 @@ func buildProject() {
 			CreateParentFunc:  os.Mkdir,
 			CreateContentFunc: ioutil.WriteFile},
 
-		"init": projectItem{
+		projectItem{
 			Name:              "__init__.py",
 			Permissions:       0644,
 			Content:           initPyContent(),
@@ -68,7 +68,7 @@ func buildProject() {
 			CreateContentFunc: ioutil.WriteFile,
 		},
 
-		"initTest": projectItem{
+		projectItem{
 			Name:              "__init__.py",
 			Permissions:       0644,
 			Content:           "",
@@ -77,7 +77,7 @@ func buildProject() {
 			CreateContentFunc: ioutil.WriteFile,
 		},
 
-		"testProject": projectItem{
+		projectItem{
 			Name:              "test_" + pythonProjectMetaData.projectName + ".py",
 			Permissions:       0644,
 			Content:           testProjectContent(),
