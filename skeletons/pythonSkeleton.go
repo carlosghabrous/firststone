@@ -1,4 +1,4 @@
-package languages
+package skeletons
 
 import (
 	"io/ioutil"
@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-// moduleLanguage contains the programming language of projects that will be created
-const moduleLanguage string = "python"
+// pythonModuleLanguage contains the programming language of projects that will be created
+const pythonModuleLanguage string = "python"
 
 // projectMetaData contains project meta data (duh)
 type projectMetaData struct {
@@ -28,7 +28,7 @@ func (pn *projectMetaData) setProjectMetaData(name string) {
 
 // init registers that this module's language is available
 func init() {
-	supportedLanguages.addLanguage(moduleLanguage)
+	projectsMetaData.addLanguage(pythonModuleLanguage)
 }
 
 // buildProject constructs a variable of type Project with all necessary projectItems
@@ -87,7 +87,7 @@ func buildProject() {
 		},
 	}
 
-	projectsMetaData.addProject(moduleLanguage, pythonProject)
+	projectsMetaData.addProject(pythonModuleLanguage, pythonProject)
 
 }
 

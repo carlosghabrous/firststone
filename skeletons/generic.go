@@ -1,19 +1,12 @@
 // TODO: change file's name
 // TODO: error handling
-package languages
+package skeletons
 
 import (
+	"fmt"
 	"os"
 	"path"
 )
-
-// void is an empty struct, used to implement a set type using a map
-//TODO: not necessary
-type void struct{}
-
-// languageSet is used to implement a set
-//TODO: not necessary
-type languagesSet map[string]void
 
 // projectItem provides the description of each item (file or directory) that belong to a project
 //TODO: members do not need to be public
@@ -33,40 +26,33 @@ type Project map[string]projectItem
 //TODO: change name
 type Projects map[string]Project
 
-// emptyValue is a var of type void(struct{}) used in the set implementation
-//TODO: not necessary
-var emptyValue void
-
-// supportedLanguages contains the languages supported by firststone
-//TODO: not necessary
-var supportedLanguages languagesSet = make(languagesSet)
+// type projectMetaData struct {
+// 	name      string
+// 	author    string
+// 	email     string
+// 	url       string
+// 	shortDesc string
+// }
+// type ProjectBuilder interface {
+// 	setProjectMetaData(metaData)
+// 	buildProject() error
+// }
 
 // projectsMetaData maps languages to Projects (collection of projectItems)
 //TODO: change name
 var projectsMetaData Projects = make(Projects)
 
-// addLanguage adds a language to the supportedLanguages set. It is used from the individual languages' modules
-func (ls languagesSet) addLanguage(language string) {
+// addLanguage adds a language to the projectsMetaData map. It is used from the individual languages' modules
+func (p Projects) addLanguage(language string) {
 
-	if _, ok := ls[language]; !ok {
-		ls[language] = emptyValue
+	if _, ok := p[language]; !ok {
+		p[language] = Project{}
 	}
 }
 
 // addProject is used to add a correspondance between a language and a Project(collection of projectItems)
 func (pMetaData Projects) addProject(language string, project Project) {
 	pMetaData[language] = project
-}
-
-// IsSupportedLanguage checks whether a language is supported by the project
-//TODO: not necessary. CreateProject does a check on languages too. Could use it to check that a language is supported
-func IsSupportedLanguage(language string) bool {
-	_, ok := supportedLanguages[language]
-	if !ok {
-		return false
-	}
-
-	return true
 }
 
 // CreateProject runs predefined actions to create a project of a certain language
@@ -81,11 +67,12 @@ func CreateProject(name, language string) error {
 
 		break
 
-	// case "go":
-	// 	goProjectName.SetProjectName(name)
+	case "go":
+		// goProjectMetaData.setProjectMetaData(name)
+		break
 
 	default:
-		break
+		return fmt.Errorf("Language %v not supported\n", language)
 	}
 
 	buildProject()

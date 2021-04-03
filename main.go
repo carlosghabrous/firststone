@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/carlosghabrous/firststone/languages"
+	"github.com/carlosghabrous/firststone/skeletons"
 )
 
 const usageDoc string = "firststone <command> [flags]"
@@ -49,12 +49,9 @@ func initCmd(commands ...string) {
 
 	fmt.Printf("help %v, overwrite %v, gitstart %v, name %v, language %v\n", *initHelp, *initOverwrite, *initGitStart, projectName, projectLanguage)
 
-	if !languages.IsSupportedLanguage(projectLanguage) {
-		fmt.Printf("Language %v is not supported\n", projectLanguage)
-		os.Exit(1)
+	if err := skeletons.CreateProject(projectName, projectLanguage); err != nil {
+		fmt.Printf("Could not create project: %v\n", err)
 	}
-
-	languages.CreateProject(projectName, projectLanguage)
 }
 
 func helpCmd(commands ...string) {
@@ -68,11 +65,6 @@ func cleanCmd(commands ...string) {
 
 	projectName, projectLanguage := unpackArgs(cleanCommand.Args()...)
 	fmt.Printf("name %v, language %v\n", projectName, projectLanguage)
-
-	if !languages.IsSupportedLanguage(projectLanguage) {
-		fmt.Printf("Language %v is not supported\n", projectLanguage)
-		os.Exit(1)
-	}
 
 }
 
