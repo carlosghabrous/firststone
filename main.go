@@ -50,7 +50,7 @@ func initCmd(commands ...string) {
 	fmt.Printf("help %v, overwrite %v, gitstart %v, name %v, language %v\n", *initHelp, *initOverwrite, *initGitStart, projectName, projectLanguage)
 
 	if err := skeletons.CreateProject(projectName, projectLanguage); err != nil {
-		fmt.Printf("Could not create project: %v\n", err)
+		fmt.Printf("Could not create project -> %v\n", err)
 	}
 }
 
