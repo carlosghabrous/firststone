@@ -28,13 +28,16 @@ const goModuleLanguage string = "go"
 
 // init registers that this module's language is available
 func init() {
-	lanRegistry.registerLanguage(goModuleLanguage)
+	registerBuilder(goModuleLanguage, buildProjectGo)
 }
 
 // // buildProject constructs a variable of type Project with all necessary projectItems
 // // TODO: CreateParentFunc and CreateContentFunc should contain these functions by default, instead of repeating them every time
-// func buildProject() {
-// 	pythonProject := Project{
+func buildProjectGo(pMeta *ProjectMetaData) Project {
+	goProject := Project{}
+	return goProject
+}
+
 // 		"setup": projectItem{
 // 			Name:              "setup.py",
 // 			Permissions:       0644,

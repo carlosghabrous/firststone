@@ -4,21 +4,12 @@ package skeletons
 import (
 	"fmt"
 	"os"
+	"path"
 )
 
-// voidMember is an empty struct, used to implement a set
-type voidMember struct{}
-
-// languageRegistry is a set
-type languageRegistry map[string]voidMember
-
-// languageRegisterer is an interface that defines a method to register a language
-type languageRegisterer interface {
-	registerLanguage(language string)
-}
-
-// projectItem provides the description of each item (file or directory) that belong to a project
-type projectItem struct {
+// ProjectItem provides the description of each item (file or directory) that belong to a project
+//TODO: should the functions be interfaces?
+type ProjectItem struct {
 	itemName          string                                                     // Item's name
 	permissions       os.FileMode                                                // Item's permissions (0644 for files, 0755 for directories)
 	content           string                                                     // Item's content
@@ -28,66 +19,56 @@ type projectItem struct {
 }
 
 // Project is a collection of projectItems
-type Project []projectItem
+type Project []ProjectItem
 
-// voidMember is a variable used in the assignment of new entries to the lanRegistry set
-var void voidMember
+// ProjectMetaData contains some fields every project should have
+type ProjectMetaData struct {
+	pName   string // Project's name
+	pAuthor string // Project's main author
+	pMail   string // Project's main author email
+}
 
-// lanRegistry is the variable holding the unique set of languages registered
-var lanRegistry languageRegistry = make(languageRegistry)
+// ProjectBuilder is a function that takes care of building projects
+// It is defined in the different language specific skeleton modules
+type ProjectBuilder func(pMeta *ProjectMetaData) Project
 
-func (lreg languageRegistry) registerLanguage(language string) {
-	if _, ok := lreg[language]; !ok {
-		lreg[language] = void
+// ProjectRegistry maps languages to project builder functions
+type ProjectRegistry map[string]ProjectBuilder
+
+// registry is a variable of type ProjectRegistry
+// Associations between languages and project builder functions are stored here
+var registry ProjectRegistry = make(ProjectRegistry)
+
+// registerBuilder maps a language to its builder function for later use
+func registerBuilder(language string, builder ProjectBuilder) {
+	if _, ok := registry[language]; !ok {
+		registry[language] = builder
 	}
 }
 
-// // projectMetaData contains some fields every project should have
-// type projectMetaData struct {
-// 	pName   string // Project's name
-// 	pAuthor string // Project's main author
-// }
-
-// metaDataSetter is an interface with a method to set a project's meta data
-// type metaDataSetter interface {
-// 	setProjectMetaData(pmd *projectMetaData)
-// }
-
-// addProject is used to add a correspondance between a language and a Project(collection of projectItems)
-// func (pMetaData ProjectRegistry) addProject(language string, project Project) {
-// 	pMetaData[language] = project
-// }
-
 // CreateProject runs predefined actions to create a project of a certain language
-// TODO: refactor
-// 1. replace switch/case by a map of language a type. This type should contain two members, one the SetProjectMeta function and the other
-// the buildProject function
 func CreateProject(name, language string) error {
 
-	switch language {
-	case "python":
-		// pythonProjectMetaData.setProjectMetaDatae})
+	var builder ProjectBuilder
+	var ok bool
 
-		break
-
-	case "go":
-		// goProjectMetaData.setProjectMetaData(name)
-		break
-
-	default:
+	if builder, ok = registry[language]; !ok {
 		return fmt.Errorf("Language %v not supported\n", language)
 	}
 
-	// registerProject()
-	// project := registry[language]
+	project := builder(&ProjectMetaData{pName: name})
 
-	// for _, projectItem := range project {
-	// 	if !dirExists(projectItem.parentDir) {
-	// 		projectItem.createParentFunc(projectItem.parentDir, 0755)
-	// 	}
+	for _, projectItem := range project {
+		if !dirExists(projectItem.parentDir) {
+			projectItem.createParentFunc(projectItem.parentDir, 0755)
+		}
 
-	// 	projectItem.createContentFunc(path.Join(projectItem.parentDir, projectItem.name), []byte(projectItem.content), projectItem.permissions)
-	// }
+		projectItem.createContentFunc(
+			path.Join(projectItem.parentDir, projectItem.itemName),
+			[]byte(projectItem.content),
+			projectItem.permissions,
+		)
+	}
 
 	return nil
 }
