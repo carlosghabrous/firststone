@@ -7,8 +7,8 @@ package skeletons
 // 	"strings"
 // )
 
-// // goModuleLanguage contains the programming language of projects that will be created
-// const goModuleLanguage string = "go"
+// goModuleLanguage contains the programming language of projects that will be created
+const goModuleLanguage string = "go"
 
 // // projectMetaData contains project meta data (duh)
 // type projectMetaData struct {
@@ -26,10 +26,10 @@ package skeletons
 // 	pn.projectName = name
 // }
 
-// // init registers that this module's language is available
-// func init() {
-// 	supportedLanguages.addLanguage(goModuleLanguage)
-// }
+// init registers that this module's language is available
+func init() {
+	lanRegistry.registerLanguage(goModuleLanguage)
+}
 
 // // buildProject constructs a variable of type Project with all necessary projectItems
 // // TODO: CreateParentFunc and CreateContentFunc should contain these functions by default, instead of repeating them every time

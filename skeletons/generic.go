@@ -4,55 +4,59 @@ package skeletons
 import (
 	"fmt"
 	"os"
-	"path"
 )
 
+// voidMember is an empty struct, used to implement a set
+type voidMember struct{}
+
+// languageRegistry is a set
+type languageRegistry map[string]voidMember
+
+// languageRegisterer is an interface that defines a method to register a language
+type languageRegisterer interface {
+	registerLanguage(language string)
+}
+
 // projectItem provides the description of each item (file or directory) that belong to a project
-//TODO: members do not need to be public
 type projectItem struct {
-	Name              string                                                     // Item's name
-	Permissions       os.FileMode                                                // Item's permissions (0644 for files, 0755 for directories)
-	Content           string                                                     // Item's content
-	ParentDir         string                                                     // Item's parent directory
-	CreateParentFunc  func(itemName string, perm os.FileMode) error              // Function signature to create the item's parent
-	CreateContentFunc func(itemName string, data []byte, perm os.FileMode) error // Function signature to create the item's content
+	itemName          string                                                     // Item's name
+	permissions       os.FileMode                                                // Item's permissions (0644 for files, 0755 for directories)
+	content           string                                                     // Item's content
+	parentDir         string                                                     // Item's parent directory
+	createParentFunc  func(itemName string, perm os.FileMode) error              // Function signature to create the item's parent
+	createContentFunc func(itemName string, data []byte, perm os.FileMode) error // Function signature to create the item's content
 }
 
 // Project is a collection of projectItems
 type Project []projectItem
 
-// Maps languages to Projects
-//TODO: change name
-type Projects map[string]Project
+// voidMember is a variable used in the assignment of new entries to the lanRegistry set
+var void voidMember
 
-// type projectMetaData struct {
-// 	name      string
-// 	author    string
-// 	email     string
-// 	url       string
-// 	shortDesc string
-// }
-// type ProjectBuilder interface {
-// 	setProjectMetaData(metaData)
-// 	buildProject() error
-// }
+// lanRegistry is the variable holding the unique set of languages registered
+var lanRegistry languageRegistry = make(languageRegistry)
 
-// projectsMetaData maps languages to Projects (collection of projectItems)
-//TODO: change name
-var projectsMetaData Projects = make(Projects)
-
-// addLanguage adds a language to the projectsMetaData map. It is used from the individual languages' modules
-func (p Projects) addLanguage(language string) {
-
-	if _, ok := p[language]; !ok {
-		p[language] = Project{}
+func (lreg languageRegistry) registerLanguage(language string) {
+	if _, ok := lreg[language]; !ok {
+		lreg[language] = void
 	}
 }
 
+// // projectMetaData contains some fields every project should have
+// type projectMetaData struct {
+// 	pName   string // Project's name
+// 	pAuthor string // Project's main author
+// }
+
+// metaDataSetter is an interface with a method to set a project's meta data
+// type metaDataSetter interface {
+// 	setProjectMetaData(pmd *projectMetaData)
+// }
+
 // addProject is used to add a correspondance between a language and a Project(collection of projectItems)
-func (pMetaData Projects) addProject(language string, project Project) {
-	pMetaData[language] = project
-}
+// func (pMetaData ProjectRegistry) addProject(language string, project Project) {
+// 	pMetaData[language] = project
+// }
 
 // CreateProject runs predefined actions to create a project of a certain language
 // TODO: refactor
@@ -62,7 +66,7 @@ func CreateProject(name, language string) error {
 
 	switch language {
 	case "python":
-		pythonProjectMetaData.setProjectMetaData(name)
+		// pythonProjectMetaData.setProjectMetaDatae})
 
 		break
 
@@ -74,16 +78,16 @@ func CreateProject(name, language string) error {
 		return fmt.Errorf("Language %v not supported\n", language)
 	}
 
-	buildProject()
-	project := projectsMetaData[language]
+	// registerProject()
+	// project := registry[language]
 
-	for _, projectItem := range project {
-		if !dirExists(projectItem.ParentDir) {
-			projectItem.CreateParentFunc(projectItem.ParentDir, 0755)
-		}
+	// for _, projectItem := range project {
+	// 	if !dirExists(projectItem.parentDir) {
+	// 		projectItem.createParentFunc(projectItem.parentDir, 0755)
+	// 	}
 
-		projectItem.CreateContentFunc(path.Join(projectItem.ParentDir, projectItem.Name), []byte(projectItem.Content), projectItem.Permissions)
-	}
+	// 	projectItem.createContentFunc(path.Join(projectItem.parentDir, projectItem.name), []byte(projectItem.content), projectItem.permissions)
+	// }
 
 	return nil
 }
