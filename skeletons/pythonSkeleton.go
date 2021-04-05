@@ -16,8 +16,7 @@ func init() {
 	registerBuilder(pythonModuleLanguage, buildProjectPython)
 }
 
-// buildProject constructs a variable of type Project with all necessary projectItems
-// TODO: CreateParentFunc and CreateContentFunc should contain these functions by default, instead of repeating them every time
+// buildProjectPython constructs a variable of type Project with all necessary projectItems
 func buildProjectPython(pMeta *ProjectMetaData) Project {
 
 	pythonProjectMetaData.pName = pMeta.pName
