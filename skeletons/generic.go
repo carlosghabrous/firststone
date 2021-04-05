@@ -33,9 +33,22 @@ type ProjectBuilder func(pMeta *ProjectMetaData) Project
 // ProjectRegistry maps languages to project builder functions
 type ProjectRegistry map[string]ProjectBuilder
 
+// ProjectCrap is a list of all items that must be cleaned
+type ProjectCrap []string
+
+// ProjectCleaner is a function that returns a list of items to be cleaned
+type ProjectCleaner func(pName string) ProjectCrap
+
+// ProjectCleanerRegistry maps languages to functions that perform the cleaning
+type ProjectCleanerRegistry map[string]ProjectCleaner
+
 // registry is a variable of type ProjectRegistry
 // Associations between languages and project builder functions are stored here
 var registry ProjectRegistry = make(ProjectRegistry)
+
+// cleanRegistry is a variable of type ProjectCleanRegistry
+// Associations between languages and project cleaner functions are stored here
+var cleanRegistry ProjectCleanerRegistry = make(ProjectCleanerRegistry)
 
 // registerBuilder maps a language to its builder function for later use
 func registerBuilder(language string, builder ProjectBuilder) {
@@ -43,6 +56,20 @@ func registerBuilder(language string, builder ProjectBuilder) {
 		registry[language] = builder
 	}
 }
+
+func registerCleaner(language string, cleaner ProjectCleaner) {
+	if _, ok := cleanRegistry[language]; !ok {
+		cleanRegistry[language] = cleaner
+	}
+}
+
+// func addToRegister(language string, registry map[string]interface{}, item interface{}) func() {
+// 	return func() {
+// 		if _, ok := registry[language]; !ok {
+// 			registry[language] = item
+// 		}
+// 	}
+// }
 
 // CreateProject runs predefined actions to create a project of a certain language
 func CreateProject(name, language string) error {
@@ -53,6 +80,15 @@ func CreateProject(name, language string) error {
 	if builder, ok = registry[language]; !ok {
 		return fmt.Errorf("Language %v not supported\n", language)
 	}
+
+	// cdPath, err := os.Getwd()
+	// if err != nil {
+	// 	return fmt.Errorf("Could not get current directory's name\n")
+	// }
+
+	// if name != path.Base(cdPath) {
+	// 	return fmt.Errorf("Project's name is not the same as the current directory\n")
+	// }
 
 	project := builder(&ProjectMetaData{pName: name})
 
@@ -66,6 +102,25 @@ func CreateProject(name, language string) error {
 			[]byte(projectItem.content),
 			projectItem.permissions,
 		)
+	}
+
+	return nil
+}
+
+func CleanProject(name, language string) error {
+
+	var cleaner ProjectCleaner
+	var ok bool
+
+	if cleaner, ok = cleanRegistry[language]; !ok {
+		return fmt.Errorf("Language %v not supported\n", language)
+	}
+
+	projectCrap := cleaner(name)
+
+	for _, crap := range projectCrap {
+		fmt.Printf("removing %v\n", crap)
+		os.RemoveAll(crap)
 	}
 
 	return nil

@@ -52,6 +52,10 @@ func buildProjectGo(pMeta *ProjectMetaData) Project {
 	return goProject
 }
 
+func cleanProjectGo(pName string) ProjectCrap {
+	return []string{pName}
+}
+
 func mainContent() string {
 
 	content := []string{

@@ -14,6 +14,7 @@ var pythonProjectMetaData ProjectMetaData
 // init registers that this module's language is available
 func init() {
 	registerBuilder(pythonModuleLanguage, buildProjectPython)
+	registerCleaner(pythonModuleLanguage, cleanProjectPython)
 }
 
 // buildProjectPython constructs a variable of type Project with all necessary projectItems
@@ -76,6 +77,15 @@ func buildProjectPython(pMeta *ProjectMetaData) Project {
 	return pythonProject
 }
 
+func cleanProjectPython(pName string) ProjectCrap {
+
+	return []string{"__pycache__",
+		"build",
+		"dist",
+		pName + ".egg-info",
+	}
+}
+
 func setupContent() string {
 	content := []string{
 		"'''",
@@ -108,7 +118,7 @@ func setupContent() string {
 		"\t],",
 		"}\n",
 		"setup(",
-		"\tname='test-accpy',",
+		"\tname='" + pythonProjectMetaData.pName + "',",
 		"\tversion='0.0.1.dev0',\n",
 		"\tauthor='" + pythonProjectMetaData.pAuthor + "',",
 		"\tauthor_email='" + pythonProjectMetaData.pMail + "',",

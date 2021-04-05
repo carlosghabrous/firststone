@@ -66,6 +66,10 @@ func cleanCmd(commands ...string) {
 	projectName, projectLanguage := unpackArgs(cleanCommand.Args()...)
 	fmt.Printf("name %v, language %v\n", projectName, projectLanguage)
 
+	if err := skeletons.CleanProject(projectName, projectLanguage); err != nil {
+		fmt.Printf("Could not clean project -> %v\n", err)
+	}
+
 }
 
 func unpackArgs(args ...string) (string, string) {
