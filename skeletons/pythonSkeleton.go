@@ -1,8 +1,6 @@
 package skeletons
 
 import (
-	"io/ioutil"
-	"os"
 	"path"
 	"strings"
 )
@@ -34,54 +32,45 @@ func buildProjectPython(pMeta *ProjectMetaData) Project {
 
 	pythonProject := Project{
 		ProjectItem{
-			itemName:          "setup.py",
-			permissions:       0644,
-			content:           setupContent(),
-			parentDir:         ".",
-			createParentFunc:  os.Mkdir,
-			createContentFunc: ioutil.WriteFile},
-
-		ProjectItem{
-			itemName:          "README.md",
-			permissions:       0644,
-			content:           readMeContent(),
-			parentDir:         ".",
-			createParentFunc:  os.Mkdir,
-			createContentFunc: ioutil.WriteFile},
-
-		ProjectItem{
-			itemName:          "LICENSE",
-			permissions:       0644,
-			content:           "",
-			parentDir:         ".",
-			createParentFunc:  os.Mkdir,
-			createContentFunc: ioutil.WriteFile},
-
-		ProjectItem{
-			itemName:          "__init__.py",
-			permissions:       0644,
-			content:           initPyContent(),
-			parentDir:         pythonProjectMetaData.pName,
-			createParentFunc:  os.Mkdir,
-			createContentFunc: ioutil.WriteFile,
+			itemName:    "setup.py",
+			permissions: 0644,
+			content:     setupContent(),
+			parentDir:   ".",
 		},
 
 		ProjectItem{
-			itemName:          "__init__.py",
-			permissions:       0644,
-			content:           "",
-			parentDir:         path.Join(pythonProjectMetaData.pName, "tests"),
-			createParentFunc:  os.Mkdir,
-			createContentFunc: ioutil.WriteFile,
+			itemName:    "README.md",
+			permissions: 0644,
+			content:     readMeContent(),
+			parentDir:   ".",
 		},
 
 		ProjectItem{
-			itemName:          "test_" + pythonProjectMetaData.pName + ".py",
-			permissions:       0644,
-			content:           testProjectContent(),
-			parentDir:         path.Join(pythonProjectMetaData.pName, "tests"),
-			createParentFunc:  os.Mkdir,
-			createContentFunc: ioutil.WriteFile,
+			itemName:    "LICENSE",
+			permissions: 0644,
+			content:     "",
+			parentDir:   ".",
+		},
+
+		ProjectItem{
+			itemName:    "__init__.py",
+			permissions: 0644,
+			content:     initPyContent(),
+			parentDir:   pythonProjectMetaData.pName,
+		},
+
+		ProjectItem{
+			itemName:    "__init__.py",
+			permissions: 0644,
+			content:     "",
+			parentDir:   path.Join(pythonProjectMetaData.pName, "tests"),
+		},
+
+		ProjectItem{
+			itemName:    "test_" + pythonProjectMetaData.pName + ".py",
+			permissions: 0644,
+			content:     testProjectContent(),
+			parentDir:   path.Join(pythonProjectMetaData.pName, "tests"),
 		},
 	}
 

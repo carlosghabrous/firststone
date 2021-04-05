@@ -3,19 +3,17 @@ package skeletons
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
 )
 
 // ProjectItem provides the description of each item (file or directory) that belong to a project
-//TODO: should the functions be interfaces?
 type ProjectItem struct {
-	itemName          string                                                     // Item's name
-	permissions       os.FileMode                                                // Item's permissions (0644 for files, 0755 for directories)
-	content           string                                                     // Item's content
-	parentDir         string                                                     // Item's parent directory
-	createParentFunc  func(itemName string, perm os.FileMode) error              // Function signature to create the item's parent
-	createContentFunc func(itemName string, data []byte, perm os.FileMode) error // Function signature to create the item's content
+	itemName    string      // Item's name
+	permissions os.FileMode // Item's permissions (0644 for files, 0755 for directories)
+	content     string      // Item's content
+	parentDir   string      // Item's parent directory
 }
 
 // Project is a collection of projectItems
@@ -60,10 +58,10 @@ func CreateProject(name, language string) error {
 
 	for _, projectItem := range project {
 		if !dirExists(projectItem.parentDir) {
-			projectItem.createParentFunc(projectItem.parentDir, 0755)
+			os.Mkdir(projectItem.parentDir, 0755)
 		}
 
-		projectItem.createContentFunc(
+		ioutil.WriteFile(
 			path.Join(projectItem.parentDir, projectItem.itemName),
 			[]byte(projectItem.content),
 			projectItem.permissions,
