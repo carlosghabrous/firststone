@@ -57,19 +57,12 @@ func registerBuilder(language string, builder ProjectBuilder) {
 	}
 }
 
+// registerCleaner maps a language to its cleaner function for later use
 func registerCleaner(language string, cleaner ProjectCleaner) {
 	if _, ok := cleanRegistry[language]; !ok {
 		cleanRegistry[language] = cleaner
 	}
 }
-
-// func getRegisterFunction(registry map[string]interface{}, item interface{}) func() {
-// 	return func(language string) {
-// 		if _, ok := registry[language]; !ok {
-// 			registry[language] = item
-// 		}
-// 	}
-// }
 
 // CreateProject runs predefined actions to create a project of a certain language
 func CreateProject(language string) error {

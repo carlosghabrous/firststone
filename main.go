@@ -45,7 +45,9 @@ func initCmd(commands ...string) {
 	initCommand.Parse(commands)
 	projectLanguage := unpackArgs(initCommand.Args()...)
 
-	fmt.Printf("help %v, language %v\n", *initHelp, projectLanguage)
+	if *initHelp {
+		usageInitCmd()
+	}
 
 	if err := skeletons.CreateProject(projectLanguage); err != nil {
 		fmt.Printf("Could not create project -> %v\n", err)
@@ -63,7 +65,10 @@ func cleanCmd(commands ...string) {
 	cleanCommand.Parse(commands)
 
 	projectLanguage := unpackArgs(cleanCommand.Args()...)
-	fmt.Printf("help %v, language %v\n", *cleanHelp, projectLanguage)
+
+	if *cleanHelp {
+		usageHelpCmd()
+	}
 
 	if err := skeletons.CleanProject(projectLanguage); err != nil {
 		fmt.Printf("Could not clean project -> %v\n", err)
@@ -78,4 +83,12 @@ func unpackArgs(args ...string) string {
 	}
 
 	return args[0]
+}
+
+func usageInitCmd() {
+	fmt.Println("Print init command's usage")
+}
+
+func usageHelpCmd() {
+	fmt.Println("Print help command's usage")
 }
