@@ -41,13 +41,11 @@ func main() {
 func initCmd(commands ...string) {
 	initCommand := flag.NewFlagSet("init", flag.ExitOnError)
 	initHelp := initCommand.Bool("help", false, "help")
-	initOverwrite := initCommand.Bool("overwrite", false, "overwrite")
-	initGitStart := initCommand.Bool("gitstart", false, "gitstart")
 
 	initCommand.Parse(commands)
 	projectLanguage := unpackArgs(initCommand.Args()...)
 
-	fmt.Printf("help %v, overwrite %v, gitstart %v, language %v\n", *initHelp, *initOverwrite, *initGitStart, projectLanguage)
+	fmt.Printf("help %v, language %v\n", *initHelp, projectLanguage)
 
 	if err := skeletons.CreateProject(projectLanguage); err != nil {
 		fmt.Printf("Could not create project -> %v\n", err)
@@ -61,9 +59,11 @@ func helpCmd(commands ...string) {
 
 func cleanCmd(commands ...string) {
 	cleanCommand := flag.NewFlagSet("clean", flag.ExitOnError)
+	cleanHelp := cleanCommand.Bool("help", false, "help")
 	cleanCommand.Parse(commands)
 
 	projectLanguage := unpackArgs(cleanCommand.Args()...)
+	fmt.Printf("help %v, language %v\n", *cleanHelp, projectLanguage)
 
 	if err := skeletons.CleanProject(projectLanguage); err != nil {
 		fmt.Printf("Could not clean project -> %v\n", err)
