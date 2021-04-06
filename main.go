@@ -45,11 +45,11 @@ func initCmd(commands ...string) {
 	initGitStart := initCommand.Bool("gitstart", false, "gitstart")
 
 	initCommand.Parse(commands)
-	projectName, projectLanguage := unpackArgs(initCommand.Args()...)
+	projectLanguage := unpackArgs(initCommand.Args()...)
 
-	fmt.Printf("help %v, overwrite %v, gitstart %v, name %v, language %v\n", *initHelp, *initOverwrite, *initGitStart, projectName, projectLanguage)
+	fmt.Printf("help %v, overwrite %v, gitstart %v, language %v\n", *initHelp, *initOverwrite, *initGitStart, projectLanguage)
 
-	if err := skeletons.CreateProject(projectName, projectLanguage); err != nil {
+	if err := skeletons.CreateProject(projectLanguage); err != nil {
 		fmt.Printf("Could not create project -> %v\n", err)
 	}
 }
@@ -63,20 +63,19 @@ func cleanCmd(commands ...string) {
 	cleanCommand := flag.NewFlagSet("clean", flag.ExitOnError)
 	cleanCommand.Parse(commands)
 
-	projectName, projectLanguage := unpackArgs(cleanCommand.Args()...)
-	fmt.Printf("name %v, language %v\n", projectName, projectLanguage)
+	projectLanguage := unpackArgs(cleanCommand.Args()...)
 
-	if err := skeletons.CleanProject(projectName, projectLanguage); err != nil {
+	if err := skeletons.CleanProject(projectLanguage); err != nil {
 		fmt.Printf("Could not clean project -> %v\n", err)
 	}
 
 }
 
-func unpackArgs(args ...string) (string, string) {
-	if len(args) < 2 {
-		fmt.Println("Two arguments expected, project name and language!")
+func unpackArgs(args ...string) string {
+	if len(args) < 1 {
+		fmt.Println("Two arguments expected, project language!")
 		os.Exit(1)
 	}
 
-	return args[0], args[1]
+	return args[0]
 }

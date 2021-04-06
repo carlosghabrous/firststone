@@ -72,7 +72,7 @@ func registerCleaner(language string, cleaner ProjectCleaner) {
 // }
 
 // CreateProject runs predefined actions to create a project of a certain language
-func CreateProject(name, language string) error {
+func CreateProject(language string) error {
 
 	var builder ProjectBuilder
 	var ok bool
@@ -81,14 +81,10 @@ func CreateProject(name, language string) error {
 		return fmt.Errorf("Language %v not supported\n", language)
 	}
 
-	// cdPath, err := os.Getwd()
-	// if err != nil {
-	// 	return fmt.Errorf("Could not get current directory's name\n")
-	// }
-
-	// if name != path.Base(cdPath) {
-	// 	return fmt.Errorf("Project's name is not the same as the current directory\n")
-	// }
+	name, err := getCurrentDirectory()
+	if err != nil {
+		return fmt.Errorf("Error while getting current directory: %v\n", err)
+	}
 
 	project := builder(&ProjectMetaData{pName: name})
 
@@ -107,13 +103,18 @@ func CreateProject(name, language string) error {
 	return nil
 }
 
-func CleanProject(name, language string) error {
+func CleanProject(language string) error {
 
 	var cleaner ProjectCleaner
 	var ok bool
 
 	if cleaner, ok = cleanRegistry[language]; !ok {
 		return fmt.Errorf("Language %v not supported\n", language)
+	}
+
+	name, err := getCurrentDirectory()
+	if err != nil {
+		return fmt.Errorf("Error while getting current directory: %v\n", err)
 	}
 
 	projectCrap := cleaner(name)
@@ -133,4 +134,15 @@ func dirExists(directory string) bool {
 	}
 
 	return true
+}
+
+func getCurrentDirectory() (cwd string, err error) {
+	cdPath, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("Could not get current directory's name\n")
+	}
+
+	cwd = path.Base(cdPath)
+
+	return cwd, err
 }
