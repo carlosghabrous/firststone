@@ -103,11 +103,14 @@ func CreateProject(language string) error {
 			os.Mkdir(projectItem.parentDir, 0755)
 		}
 
-		ioutil.WriteFile(
+		err = ioutil.WriteFile(
 			path.Join(projectItem.parentDir, projectItem.itemName),
 			[]byte(projectItem.content),
 			projectItem.permissions,
 		)
+		if err != nil {
+			return fmt.Errorf("Could not write file %v: %v\n", projectItem.itemName, err)
+		}
 	}
 
 	return nil
