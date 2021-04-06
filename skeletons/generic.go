@@ -1,4 +1,3 @@
-// TODO: error handling
 package skeletons
 
 import (
@@ -64,8 +63,8 @@ func registerCleaner(language string, cleaner ProjectCleaner) {
 	}
 }
 
-// func addToRegister(language string, registry map[string]interface{}, item interface{}) func() {
-// 	return func() {
+// func getRegisterFunction(registry map[string]interface{}, item interface{}) func() {
+// 	return func(language string) {
 // 		if _, ok := registry[language]; !ok {
 // 			registry[language] = item
 // 		}
@@ -100,7 +99,11 @@ func CreateProject(language string) error {
 
 	for _, projectItem := range project {
 		if !dirExists(projectItem.parentDir) {
-			os.Mkdir(projectItem.parentDir, 0755)
+			err = os.Mkdir(projectItem.parentDir, 0755)
+			if err != nil {
+				return fmt.Errorf("Could not create directory %v: %v\n", projectItem.parentDir, err)
+			}
+			defer os.RemoveAll(projectItem.parentDir)
 		}
 
 		err = ioutil.WriteFile(

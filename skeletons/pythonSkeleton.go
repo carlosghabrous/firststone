@@ -78,7 +78,6 @@ func buildProjectPython(pMeta *ProjectMetaData) Project {
 }
 
 func cleanProjectPython(pName string) ProjectCrap {
-
 	return []string{"__pycache__",
 		"build",
 		"dist",
