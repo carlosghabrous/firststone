@@ -3,6 +3,7 @@ package skeletons
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -81,9 +82,18 @@ func CreateProject(language string) error {
 		return fmt.Errorf("Language %v not supported\n", language)
 	}
 
-	name, err := getCurrentDirectory()
+	name, cwdPath, err := getCurrentDirectory()
 	if err != nil {
 		return fmt.Errorf("Error while getting current directory: %v\n", err)
+	}
+
+	empty, err := isCwdEmpty(cwdPath)
+	if err != nil {
+		return fmt.Errorf("Error while reading current directory: %v\n", err)
+	}
+
+	if !empty {
+		return fmt.Errorf("Current directory is not empty. Make sure you don't mind erasing its contents first\n")
 	}
 
 	project := builder(&ProjectMetaData{pName: name})
@@ -112,7 +122,7 @@ func CleanProject(language string) error {
 		return fmt.Errorf("Language %v not supported\n", language)
 	}
 
-	name, err := getCurrentDirectory()
+	name, _, err := getCurrentDirectory()
 	if err != nil {
 		return fmt.Errorf("Error while getting current directory: %v\n", err)
 	}
@@ -136,13 +146,28 @@ func dirExists(directory string) bool {
 	return true
 }
 
-func getCurrentDirectory() (cwd string, err error) {
+func getCurrentDirectory() (cwd, cwdPath string, err error) {
 	cdPath, err := os.Getwd()
 	if err != nil {
-		return "", fmt.Errorf("Could not get current directory's name\n")
+		return "", "", fmt.Errorf("Could not get current directory's name\n")
 	}
 
 	cwd = path.Base(cdPath)
 
-	return cwd, err
+	return cwd, cdPath, err
+}
+
+func isCwdEmpty(dir string) (bool, error) {
+	d, err := os.Open(dir)
+	if err != nil {
+		return false, fmt.Errorf("Error while reading current directory: %v\n", err)
+	}
+	defer d.Close()
+
+	_, err = d.Readdirnames(1)
+	if err == io.EOF {
+		return true, nil
+	}
+
+	return false, err
 }
