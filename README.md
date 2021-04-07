@@ -20,13 +20,23 @@ The aim of first stone is just that, laying the first stone of a project quickly
 
 2. Make sure GOPATH is included in your PATH. Run the tool: 
     ```
-    firststone <command> [flags]
+    firststone <command> [-flags] [arguments]
     ```
 
     For instance, to create a python project:
     ```
     mkdir my-new-project
     cd my-new-project
-    firststone my-new-project python
+    firststone init my-new-project python
+    ```
+
+3. To get some help
+    ```
+    firststone --help
+    ```
+
+    You can also get help by command:
+    ```
+    firststone init --help
     ```
 
