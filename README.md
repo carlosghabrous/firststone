@@ -12,5 +12,21 @@ manually editting files to change strings here and there
 
 The aim of first stone is just that, laying the first stone of a project quickly, automatically and without forgetting to edit files here and there. 
 
-## Usage
+## Installation
+1. Go get to install the latest version of the package
+    ```
+    go get -v github.com/carlosghabrous/firststone
+    ```
+
+2. Make sure GOPATH is included in your PATH. Run the tool: 
+    ```
+    firststone <command> [flags]
+    ```
+
+    For instance, to create a python project:
+    ```
+    mkdir my-new-project
+    cd my-new-project
+    firststone my-new-project python
+    ```
 
