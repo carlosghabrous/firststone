@@ -1,5 +1,4 @@
-https://img.shields.io/github/workflow/status/carlosghabrous/firststone/Go
-https://github.com/carlosghabrous/firststone/actions/workflows/go.yml/badge.svg
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/carlosghabrous/firststone/Go)
 
 # firststone
 
