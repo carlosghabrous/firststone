@@ -1,4 +1,4 @@
-[build](https://img.shields.io/github/workflow/status/carlosghabrous/firststone/Go)
+https://img.shields.io/github/workflow/status/carlosghabrous/firststone/Go
 
 # firststone
 
