@@ -32,11 +32,6 @@ var rootCmd = &cobra.Command{
 	Short: "Automates creation of projects in different languages",
 	Long: `Firststone automates the creation of project structures for different languages. 
 	Currently, only Python and Go are supported. `,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) {
-	// 	fmt.Println("Testing")
-	// },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
