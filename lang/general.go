@@ -11,10 +11,12 @@ import (
 const languageDirName = "lang"
 
 var langDir = path.Join(".", languageDirName)
+var supportedLangSlice []string
 var supportedLangs = make(map[string]bool)
 var filesToExclude map[string]bool
 
 func init() {
+
 	initFilesToExclude()
 
 	files, err := ioutil.ReadDir(langDir)
@@ -37,6 +39,15 @@ func init() {
 			supportedLangs[fileName[:idx]] = true
 		}
 	}
+
+	initSupportedLanguages()
+}
+
+func initSupportedLanguages() {
+	supportedLangSlice = []string{}
+	for lan := range supportedLangs {
+		supportedLangSlice = append(supportedLangSlice, lan)
+	}
 }
 
 func initFilesToExclude() {
@@ -46,7 +57,11 @@ func initFilesToExclude() {
 }
 
 func LanguageSupported(language string) error {
-	fmt.Println("Language is supported")
+	if _, ok := supportedLangs[language]; !ok {
+		errorMsg := fmt.Sprintf("Language %s not supported. Supported languages: %s", language, strings.Join(supportedLangSlice, ", "))
+		return fmt.Errorf(errorMsg)
+	}
+
 	return nil
 }
 
