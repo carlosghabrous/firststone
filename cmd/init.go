@@ -16,23 +16,42 @@ limitations under the License.
 package cmd
 
 import (
+	"errors"
 	"fmt"
 
+	"github.com/carlosghabrous/firststone/lang"
 	"github.com/spf13/cobra"
 )
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Use:   "init <app name> <language>",
+	Short: "Creates the structure for a project",
+	Long: `Creates files and folders to start the project. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called")
+	firsttone init <app name> <language>
+	`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) != 2 {
+			return errors.New("Only one argument is required")
+		}
+
+		appName, appLanguage := args[0], args[1]
+		if err := lang.LanguageSupported(appLanguage); err != nil {
+			return err
+		}
+
+		fmt.Println(lang.CheckNamingConventions(appName, appLanguage))
+
+		return nil
+	},
+	RunE: func(cmd *cobra.Command, args []string) error {
+		appName, appLanguage := args[0], args[1]
+		if err := lang.BuildProject(appName, appLanguage); err != nil {
+			return err
+		}
+
+		return nil
 	},
 }
 
