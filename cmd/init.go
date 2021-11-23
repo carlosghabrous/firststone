@@ -46,6 +46,7 @@ var initCmd = &cobra.Command{
 		appName, appLanguage := args[0], args[1]
 
 		//TODO: Check how to create a variable of ProjectBuilder type dynamically
+		//TODO: general.go should have the data structures to get the appropriate builder from them
 		var builder lang.ProjectBuilder
 
 		switch appLanguage {
