@@ -15,6 +15,24 @@ var supportedLangSlice []string
 var supportedLangs = make(map[string]bool)
 var filesToExclude map[string]bool
 
+type projectItem struct {
+	name       string
+	parent     string // Maybe not a string
+	permission string // Maybe not a string
+	content    string
+}
+
+type Project struct {
+	Name         string
+	Language     string
+	projectItems []projectItem
+}
+
+type ProjectBuilder interface {
+	CheckNamingConventions() error
+	Build() error
+}
+
 func init() {
 
 	initFilesToExclude()
@@ -62,14 +80,5 @@ func LanguageSupported(language string) error {
 		return fmt.Errorf(errorMsg)
 	}
 
-	return nil
-}
-
-func CheckNamingConventions(name, language string) string {
-	return "something checking here"
-}
-
-func BuildProject(name, language string) error {
-	fmt.Println("Build project flawlessly")
 	return nil
 }
