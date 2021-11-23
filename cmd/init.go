@@ -17,7 +17,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/carlosghabrous/firststone/lang"
 	"github.com/spf13/cobra"
@@ -36,22 +35,35 @@ var initCmd = &cobra.Command{
 			return errors.New("Only one argument is required")
 		}
 
-		appName, appLanguage := args[0], args[1]
+		appLanguage := args[1]
 		if err := lang.LanguageSupported(appLanguage); err != nil {
 			return err
 		}
-
-		fmt.Println(lang.CheckNamingConventions(appName, appLanguage))
 
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		appName, appLanguage := args[0], args[1]
-		if err := lang.BuildProject(appName, appLanguage); err != nil {
-			return err
+
+		//TODO: Check how to create a variable of ProjectBuilder type dynamically
+		var builder lang.ProjectBuilder
+
+		switch appLanguage {
+		case "python":
+			builder = lang.PythonProject{Name: appName, Language: appLanguage}
+
+		case "golang":
+			builder = lang.GolangProject{Name: appName, Language: appLanguage}
+
+		default:
+			return errors.New("Unrecognized language! This should not have happened!")
 		}
 
-		return nil
+		if err := builder.CheckNamingConventions(); err != nil {
+			return nil
+		}
+
+		return builder.Build()
 	},
 }
 
