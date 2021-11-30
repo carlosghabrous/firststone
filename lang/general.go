@@ -31,6 +31,7 @@ type Project struct {
 type ProjectBuilder interface {
 	CheckNamingConventions() error
 	Build() error
+	SetAppName(appName string)
 }
 
 func init() {
