@@ -51,10 +51,10 @@ var initCmd = &cobra.Command{
 
 		switch appLanguage {
 		case "python":
-			builder = lang.PythonProject{Name: appName, Language: appLanguage}
+			builder = &lang.PythonProject{Name: appName, Language: appLanguage}
 
 		case "golang":
-			builder = lang.GolangProject{Name: appName, Language: appLanguage}
+			builder = &lang.GolangProject{Name: appName, Language: appLanguage}
 
 		default:
 			return errors.New("Unrecognized language! This should not have happened!")
@@ -63,6 +63,8 @@ var initCmd = &cobra.Command{
 		if err := builder.CheckNamingConventions(); err != nil {
 			return nil
 		}
+
+		builder.SetAppName(appName)
 
 		return builder.Build()
 	},
