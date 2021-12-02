@@ -57,11 +57,11 @@ var initCmd = &cobra.Command{
 			builder = &lang.GolangProject{Name: appName, Language: appLanguage}
 
 		default:
-			return errors.New("Unrecognized language! This should not have happened!")
+			panic("Unrecognized language! This should not have happened!")
 		}
 
 		if err := builder.CheckNamingConventions(); err != nil {
-			return nil
+			return err
 		}
 
 		builder.SetAppName(appName)
