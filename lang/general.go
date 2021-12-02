@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"path"
 	"strings"
 )
@@ -18,7 +19,7 @@ var filesToExclude map[string]bool
 type projectItem struct {
 	name       string
 	parent     string // Maybe not a string
-	permission string // Maybe not a string
+	permission os.FileMode
 	content    string
 }
 

@@ -1,8 +1,16 @@
 package lang
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
-const ReadmeContent = `SHORT DESCRIPTION OF PROJECT
+const flag = "_project-name_"
+
+var ReadmeContent string = `# ` +
+	flag +
+	`
+	SHORT DESCRIPTION OF PROJECT
 
 You can use [Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
 to write your content.
@@ -19,34 +27,34 @@ type PythonProject Project
 var pythonProjectItems = []projectItem{
 	{name: "README.md",
 		parent:     "",
-		permission: "permission1",
+		permission: 0644,
 		content:    ReadmeContent},
 	{name: "setup.py",
 		parent:     "",
-		permission: "",
+		permission: 0644,
 		content:    "setup.py content"},
-	{name: "",
-		parent:     "",
-		permission: "",
-		content:    ""},
+	{name: "_project_name_",
+		parent:     ".",
+		permission: os.ModeDir | 0755,
+		content:    "test"},
 	{name: "__init__.py",
 		parent:     "",
-		permission: "",
-		content:    ""},
+		permission: 0644,
+		content:    "test"},
 	{name: "tests",
 		parent:     "",
-		permission: "",
-		content:    "",
+		permission: os.ModeDir | 0755,
+		content:    "test",
 	},
 	{name: "__init__.py",
 		parent:     "tests",
-		permission: "",
-		content:    "",
+		permission: 0644,
+		content:    "test",
 	},
 	{name: "test_",
 		parent:     "tests",
-		permission: "",
-		content:    ""},
+		permission: 0644,
+		content:    "test"},
 }
 
 func (p *PythonProject) SetAppName(appName string) {
@@ -58,10 +66,44 @@ func (p *PythonProject) CheckNamingConventions() error {
 	return nil
 }
 
-func (p *PythonProject) Build() error {
-	fmt.Printf("Building %s project %s\n", p.Language, p.Name)
+func (p *PythonProject) Build() (err error) {
+
 	for _, pItem := range pythonProjectItems {
-		fmt.Println(pItem)
+
+		if pItem.permission.IsDir() {
+			err = createDir(pItem.name, pItem.permission)
+
+		} else {
+			err = createContent(pItem.name, pItem.content, pItem.permission)
+		}
+
+		if err != nil {
+			return err
+		}
 	}
+
+	return nil
+}
+
+func createDir(name string, permission os.FileMode) error {
+	if err := os.Mkdir(name, permission); err != nil {
+		return fmt.Errorf("Could not create directory %s: %v\n", name, err)
+	}
+
+	return nil
+}
+
+func createContent(name, content string, permission os.FileMode) error {
+	fh, err := os.Create(name)
+	if err != nil {
+		return fmt.Errorf("Could not create file %s: %v\n", name, err)
+	}
+	defer fh.Close()
+
+	_, err = fh.WriteString(content)
+	if err != nil {
+		return fmt.Errorf("Could not write to file %s: %v\n", name, err)
+	}
+
 	return nil
 }
