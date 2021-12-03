@@ -84,7 +84,7 @@ func (p *PythonProject) Build() (err error) {
 
 func createDir(pItem *ProjectItem) error {
 	if err := os.Mkdir(pItem.Name, pItem.Permission); err != nil {
-		return fmt.Errorf("Could not create directory %s: %v\n", pItem.Name, err)
+		return fmt.Errorf("could not create directory %s: %v", pItem.Name, err)
 	}
 
 	return nil
@@ -93,13 +93,13 @@ func createDir(pItem *ProjectItem) error {
 func createContent(name, Content string, Permission os.FileMode) error {
 	fh, err := os.Create(name)
 	if err != nil {
-		return fmt.Errorf("Could not create file %s: %v\n", name, err)
+		return fmt.Errorf("could not create file %s: %v", name, err)
 	}
 	defer fh.Close()
 
 	_, err = fh.WriteString(Content)
 	if err != nil {
-		return fmt.Errorf("Could not write to file %s: %v\n", name, err)
+		return fmt.Errorf("could not write to file %s: %v", name, err)
 	}
 
 	return nil

@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/carlosghabrous/firststone/lang"
 	"github.com/spf13/cobra"
@@ -32,7 +33,7 @@ var initCmd = &cobra.Command{
 	`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 2 {
-			return errors.New("Only one argument is required")
+			return errors.New("only one argument is required")
 		}
 
 		appLanguage := args[1]
@@ -43,11 +44,11 @@ var initCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+		appName, appLanguage := args[0], args[1]
+
+		project := lang.GetProject(appLanguage, appName)
+		fmt.Println(project)
 		return nil
-		// appName, appLanguage := args[0], args[1]
-
-		// project := lang.GetProject(appLanguage, appName)
-
 		// if err := project.CheckNamingConventions(); err != nil {
 		// 	return err
 		// }
