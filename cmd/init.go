@@ -45,26 +45,13 @@ var initCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		appName, appLanguage := args[0], args[1]
 
-		builder := registry.GetBuilder(appLanguage, appName)
+		project := registry.GetProject(appLanguage, appName)
 
-		// var builder lang.ProjectBuilder
-
-		// switch appLanguage {
-		// case "python":
-		// 	builder = &lang.PythonProject{Name: appName, Language: appLanguage}
-
-		// case "golang":
-		// 	builder = &lang.GolangProject{Name: appName, Language: appLanguage}
-
-		// default:
-		// 	panic("Unrecognized language! This should not have happened!")
-		// }
-
-		if err := builder.CheckNamingConventions(); err != nil {
+		if err := project.CheckNamingConventions(); err != nil {
 			return err
 		}
 
-		return builder.Build()
+		return project.Build()
 	},
 }
 
