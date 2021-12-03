@@ -65,10 +65,6 @@ func init() {
 	skeleton.RegisterLanguage(python)
 }
 
-func (p *PythonProject) SetAppName(appName string) {
-	p.Name = appName
-}
-
 func (p *PythonProject) CheckNamingConventions() error {
 	fmt.Printf("Checking naming conventions for project %s\n", p.Name)
 	return nil

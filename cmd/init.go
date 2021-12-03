@@ -63,8 +63,6 @@ var initCmd = &cobra.Command{
 			return err
 		}
 
-		builder.SetAppName(appName)
-
 		return builder.Build()
 	},
 }
