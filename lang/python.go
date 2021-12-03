@@ -25,9 +25,6 @@ to write your content.
 
 type PythonProject Project
 
-//TODO: what to do with 'parent', 'permission'.
-//TODO: Need to distinguish between file and directory?
-
 var pythonProjectItems = []projectItem{
 	{name: "README.md",
 		parent:     "",

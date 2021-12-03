@@ -1,4 +1,4 @@
-package skeleton
+package registry
 
 import "fmt"
 

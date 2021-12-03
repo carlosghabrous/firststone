@@ -18,8 +18,7 @@ package cmd
 import (
 	"errors"
 
-	"github.com/carlosghabrous/firststone/lang"
-	"github.com/carlosghabrous/firststone/skeleton"
+	"github.com/carlosghabrous/firststone/registry"
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +36,7 @@ var initCmd = &cobra.Command{
 		}
 
 		appLanguage := args[1]
-		if err := skeleton.LanguageSupported(appLanguage); err != nil {
+		if err := registry.LanguageSupported(appLanguage); err != nil {
 			return err
 		}
 
@@ -46,18 +45,20 @@ var initCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		appName, appLanguage := args[0], args[1]
 
-		var builder lang.ProjectBuilder
+		builder := registry.GetBuilder(appLanguage, appName)
 
-		switch appLanguage {
-		case "python":
-			builder = &lang.PythonProject{Name: appName, Language: appLanguage}
+		// var builder lang.ProjectBuilder
 
-		case "golang":
-			builder = &lang.GolangProject{Name: appName, Language: appLanguage}
+		// switch appLanguage {
+		// case "python":
+		// 	builder = &lang.PythonProject{Name: appName, Language: appLanguage}
 
-		default:
-			panic("Unrecognized language! This should not have happened!")
-		}
+		// case "golang":
+		// 	builder = &lang.GolangProject{Name: appName, Language: appLanguage}
+
+		// default:
+		// 	panic("Unrecognized language! This should not have happened!")
+		// }
 
 		if err := builder.CheckNamingConventions(); err != nil {
 			return err
