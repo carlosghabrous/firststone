@@ -19,6 +19,7 @@ import (
 	"errors"
 
 	"github.com/carlosghabrous/firststone/lang"
+	"github.com/carlosghabrous/firststone/skeleton"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +37,7 @@ var initCmd = &cobra.Command{
 		}
 
 		appLanguage := args[1]
-		if err := lang.LanguageSupported(appLanguage); err != nil {
+		if err := skeleton.LanguageSupported(appLanguage); err != nil {
 			return err
 		}
 
@@ -45,8 +46,6 @@ var initCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		appName, appLanguage := args[0], args[1]
 
-		//TODO: Check how to create a variable of ProjectBuilder type dynamically
-		//TODO: general.go should have the data structures to get the appropriate builder from them
 		var builder lang.ProjectBuilder
 
 		switch appLanguage {
