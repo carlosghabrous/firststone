@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-var languageRegistry Projects
+var languageRegistry Registry
 
 // RegisterLanguage allows modules in package lang to register themselves
 func RegisterLanguage(language string, project *Project) error {

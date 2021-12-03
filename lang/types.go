@@ -24,4 +24,4 @@ type ProjectBuilder interface {
 }
 
 // Projects type stores builders for every language
-type Projects map[string]*Project
+type Registry map[string]*Project
