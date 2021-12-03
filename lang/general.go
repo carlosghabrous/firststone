@@ -2,15 +2,7 @@ package lang
 
 import (
 	"os"
-	"path"
 )
-
-const languageDirName = "lang"
-
-var langDir = path.Join(".", languageDirName)
-var supportedLangSlice []string
-var supportedLangs = make(map[string]bool)
-var filesToExclude map[string]bool
 
 type projectItem struct {
 	name       string
