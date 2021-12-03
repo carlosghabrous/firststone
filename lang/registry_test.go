@@ -2,6 +2,10 @@ package lang
 
 import "testing"
 
+const language = "some_language"
+
+var someLanguageProject = Project{}
+
 func cleanUpRegistry() func() {
 	return func() {
 		for k := range languageRegistry {
@@ -17,7 +21,6 @@ func TestLanguageRegistryIsInitializedToNil(t *testing.T) {
 }
 
 func TestRegisterLanguage(t *testing.T) {
-	language, someLanguageProject := "some_language", Project{}
 	err := RegisterLanguage(language, &someLanguageProject)
 
 	cleanup := cleanUpRegistry()
@@ -29,7 +32,6 @@ func TestRegisterLanguage(t *testing.T) {
 }
 
 func TestAddSameLanguageTwiceFails(t *testing.T) {
-	language, someLanguageProject := "some_language", Project{}
 	err := RegisterLanguage(language, &someLanguageProject)
 	cleanup := cleanUpRegistry()
 	defer cleanup()
@@ -46,20 +48,19 @@ func TestAddSameLanguageTwiceFails(t *testing.T) {
 }
 
 func TestLanguageSupported(t *testing.T) {
-	language, someLanguageProject := "some_language", Project{}
-	err := RegisterLanguage(language, &someLanguageProject)
+	_ = RegisterLanguage(language, &someLanguageProject)
 	cleanup := cleanUpRegistry()
 	defer cleanup()
 
-	err = LanguageSupported(language)
+	err := LanguageSupported(language)
 	if err != nil {
 		t.Fatalf("Language %s has already been registered (%e)\n", language, err)
 	}
 }
 
 func TestGetProject(t *testing.T) {
-	language, someLanguageProject, projectName := "some_language", Project{}, "a_name"
-	RegisterLanguage(language, &someLanguageProject)
+	projectName := "a_name"
+	_ = RegisterLanguage(language, &someLanguageProject)
 	cleanup := cleanUpRegistry()
 	defer cleanup()
 
