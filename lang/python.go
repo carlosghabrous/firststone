@@ -3,7 +3,11 @@ package lang
 import (
 	"fmt"
 	"os"
+
+	"github.com/carlosghabrous/firststone/skeleton"
 )
+
+const python = "python"
 
 const flag = "_project-name_"
 
@@ -34,7 +38,7 @@ var pythonProjectItems = []projectItem{
 		permission: 0644,
 		content:    "setup.py content"},
 	{name: "_project_name_",
-		parent:     ".",
+		parent:     "",
 		permission: os.ModeDir | 0755,
 		content:    "test"},
 	{name: "__init__.py",
@@ -57,6 +61,10 @@ var pythonProjectItems = []projectItem{
 		content:    "test"},
 }
 
+func init() {
+	skeleton.RegisterLanguage(python)
+}
+
 func (p *PythonProject) SetAppName(appName string) {
 	p.Name = appName
 }
@@ -71,7 +79,7 @@ func (p *PythonProject) Build() (err error) {
 	for _, pItem := range pythonProjectItems {
 
 		if pItem.permission.IsDir() {
-			err = createDir(pItem.name, pItem.permission)
+			err = createDir(&pItem)
 
 		} else {
 			err = createContent(pItem.name, pItem.content, pItem.permission)
@@ -85,9 +93,9 @@ func (p *PythonProject) Build() (err error) {
 	return nil
 }
 
-func createDir(name string, permission os.FileMode) error {
-	if err := os.Mkdir(name, permission); err != nil {
-		return fmt.Errorf("Could not create directory %s: %v\n", name, err)
+func createDir(pItem *projectItem) error {
+	if err := os.Mkdir(pItem.name, pItem.permission); err != nil {
+		return fmt.Errorf("Could not create directory %s: %v\n", pItem.name, err)
 	}
 
 	return nil

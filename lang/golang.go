@@ -1,6 +1,16 @@
 package lang
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/carlosghabrous/firststone/skeleton"
+)
+
+const golang = "golang"
+
+func init() {
+	skeleton.RegisterLanguage(golang)
+}
 
 type GolangProject Project
 
