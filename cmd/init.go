@@ -17,7 +17,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/carlosghabrous/firststone/lang"
 	"github.com/spf13/cobra"
@@ -46,14 +45,12 @@ var initCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		appName, appLanguage := args[0], args[1]
 
-		project := lang.GetProject(appLanguage, appName)
-		fmt.Println(project)
-		return nil
-		// if err := project.CheckNamingConventions(); err != nil {
-		// 	return err
-		// }
+		project := lang.GetProject(appLanguage)
+		if err := project.CheckNamingConventions(appName); err != nil {
+			return err
+		}
 
-		// return project.Build()
+		return project.Build()
 	},
 }
 

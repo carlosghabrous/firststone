@@ -7,9 +7,9 @@ import (
 var languageRegistry Registry
 
 // RegisterLanguage allows modules in package lang to register themselves
-func RegisterLanguage(language string, project *Project) error {
+func RegisterLanguage(language string, project ProjectBuilder) error {
 	if languageRegistry == nil {
-		languageRegistry = make(map[string]*Project)
+		languageRegistry = make(map[string]ProjectBuilder)
 	}
 
 	_, ok := languageRegistry[language]
@@ -31,8 +31,7 @@ func LanguageSupported(language string) error {
 	return nil
 }
 
-func GetProject(language, name string) *Project {
+func GetProject(language string) ProjectBuilder {
 	project := languageRegistry[language]
-	project.Name = name
 	return project
 }

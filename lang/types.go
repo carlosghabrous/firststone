@@ -19,9 +19,9 @@ type Project struct {
 
 // ProjectBuilder is an interface that builder objects implement within the lang package
 type ProjectBuilder interface {
-	CheckNamingConventions() error
+	CheckNamingConventions(name string) error
 	Build() error
 }
 
 // Projects type stores builders for every language
-type Registry map[string]*Project
+type Registry map[string]ProjectBuilder
