@@ -3,11 +3,9 @@ package lang
 import (
 	"fmt"
 	"os"
-
-	"github.com/carlosghabrous/firststone/registry"
 )
 
-type PythonProject registry.Project
+type PythonProject Project
 
 const python = "python"
 
@@ -21,7 +19,7 @@ to write your Content.
 ## Getting started
 ##%`
 
-var pythonProjectItems = []registry.ProjectItem{
+var pythonProjectItems = []ProjectItem{
 	{Name: "README.md",
 		Parent:     "",
 		Permission: 0644,
@@ -54,18 +52,18 @@ var pythonProjectItems = []registry.ProjectItem{
 		Content:    "test"},
 }
 
-var pythonProject = registry.Project{Name: "", Language: "python", ProjectItems: pythonProjectItems}
+var pythonProject = Project{Name: "", Language: "python", ProjectItems: pythonProjectItems}
 
 func init() {
-	registry.RegisterLanguage(python, &pythonProject)
+	RegisterLanguage(python, &pythonProject)
 }
 
-func (p *registry.Project) CheckNamingConventions() error {
+func (p *PythonProject) CheckNamingConventions() error {
 	fmt.Printf("Checking naming conventions for project %s\n", p.Name)
 	return nil
 }
 
-func (p *registry.Project) Build() (err error) {
+func (p *PythonProject) Build() (err error) {
 
 	for _, pItem := range pythonProjectItems {
 
@@ -84,7 +82,7 @@ func (p *registry.Project) Build() (err error) {
 	return nil
 }
 
-func createDir(pItem *registry.ProjectItem) error {
+func createDir(pItem *ProjectItem) error {
 	if err := os.Mkdir(pItem.Name, pItem.Permission); err != nil {
 		return fmt.Errorf("Could not create directory %s: %v\n", pItem.Name, err)
 	}
