@@ -15,7 +15,7 @@ var golangProjectItems = []ProjectItem{
 		Content:    ReadmeContent},
 }
 
-var golangProject = Project{Name: "", Language: "golang", ProjectItems: golangProjectItems}
+var golangProject = Project{Name: "", Language: golang, ProjectItems: golangProjectItems}
 
 func init() {
 	RegisterLanguage(golang, &golangProject)

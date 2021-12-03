@@ -52,7 +52,7 @@ var pythonProjectItems = []ProjectItem{
 		Content:    "test"},
 }
 
-var pythonProject = Project{Name: "", Language: "python", ProjectItems: pythonProjectItems}
+var pythonProject = Project{Name: "", Language: python, ProjectItems: pythonProjectItems}
 
 func init() {
 	RegisterLanguage(python, &pythonProject)
