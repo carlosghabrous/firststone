@@ -3,23 +3,30 @@ package lang
 import (
 	"fmt"
 
-	"github.com/carlosghabrous/firststone/skeleton"
+	"github.com/carlosghabrous/firststone/registry"
 )
 
 const golang = "golang"
 
-func init() {
-	skeleton.RegisterLanguage(golang)
+var golangProjectItems = []registry.ProjectItem{
+	{Name: "README.md",
+		Parent:     "",
+		Permission: 0644,
+		Content:    ReadmeContent},
 }
 
-type GolangProject Project
+var golangProject = registry.Project{Name: "", Language: "golang", ProjectItems: pythonProjectItems}
 
-func (p *GolangProject) CheckNamingConventions() error {
+func init() {
+	registry.RegisterLanguage(golang, &golangProject)
+}
+
+func (p *registry.Project) CheckNamingConventions() error {
 	fmt.Printf("Checking naming conventions for project %s\n", p.Name)
 	return nil
 }
 
-func (p *GolangProject) Build() error {
+func (p *registry.Project) Build() error {
 	fmt.Printf("Building %s project %s\n", p.Language, p.Name)
 	return nil
 }

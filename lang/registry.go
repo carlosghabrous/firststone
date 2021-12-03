@@ -6,18 +6,18 @@ import (
 )
 
 // projectItem represents an item in a project
-type projectItem struct {
-	name       string
-	parent     string //TODO: does go have a "directory"/file object
-	permission os.FileMode
-	content    string
+type ProjectItem struct {
+	Name       string
+	Parent     string //TODO: does go have a "directory"/file object
+	Permission os.FileMode
+	Content    string
 }
 
 // Project represents a project in a certain language
 type Project struct {
 	Name         string
 	Language     string
-	projectItems []projectItem
+	ProjectItems []ProjectItem
 }
 
 // ProjectBuilder is an interface that builder objects implement within the lang package
@@ -27,7 +27,6 @@ type ProjectBuilder interface {
 }
 
 // Projects type stores builders for every language
-//TODO: replace ProjectBuilder by *Project
 type Projects map[string]*Project
 
 var languageRegistry Projects
