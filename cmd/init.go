@@ -18,7 +18,7 @@ package cmd
 import (
 	"errors"
 
-	"github.com/carlosghabrous/firststone/registry"
+	"github.com/carlosghabrous/firststone/lang"
 	"github.com/spf13/cobra"
 )
 
@@ -36,22 +36,23 @@ var initCmd = &cobra.Command{
 		}
 
 		appLanguage := args[1]
-		if err := registry.LanguageSupported(appLanguage); err != nil {
+		if err := lang.LanguageSupported(appLanguage); err != nil {
 			return err
 		}
 
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		appName, appLanguage := args[0], args[1]
+		return nil
+		// appName, appLanguage := args[0], args[1]
 
-		project := registry.GetProject(appLanguage, appName)
+		// project := lang.GetProject(appLanguage, appName)
 
-		if err := project.CheckNamingConventions(); err != nil {
-			return err
-		}
+		// if err := project.CheckNamingConventions(); err != nil {
+		// 	return err
+		// }
 
-		return project.Build()
+		// return project.Build()
 	},
 }
 
