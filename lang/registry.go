@@ -2,6 +2,7 @@ package lang
 
 import (
 	"fmt"
+	"os"
 )
 
 var languageRegistry Registry
@@ -34,4 +35,45 @@ func LanguageSupported(language string) error {
 func GetProject(language string) ProjectBuilder {
 	project := languageRegistry[language]
 	return project
+}
+
+func buildProject(projectItems *[]ProjectItem) (err error) {
+	for _, pItem := range *projectItems {
+
+		if pItem.Permission.IsDir() {
+			err = createDir(&pItem)
+
+		} else {
+			err = createContent(pItem.Name, pItem.Content, pItem.Permission)
+		}
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func createDir(pItem *ProjectItem) error {
+	if err := os.Mkdir(pItem.Name, pItem.Permission); err != nil {
+		return fmt.Errorf("could not create directory %s: %v", pItem.Name, err)
+	}
+
+	return nil
+}
+
+func createContent(name, Content string, Permission os.FileMode) error {
+	fh, err := os.Create(name)
+	if err != nil {
+		return fmt.Errorf("could not create file %s: %v", name, err)
+	}
+	defer fh.Close()
+
+	_, err = fh.WriteString(Content)
+	if err != nil {
+		return fmt.Errorf("could not write to file %s: %v", name, err)
+	}
+
+	return nil
 }

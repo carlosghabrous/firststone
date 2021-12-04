@@ -28,6 +28,5 @@ func (p *GolangProject) CheckNamingConventions(name string) error {
 }
 
 func (p *GolangProject) Build() error {
-	fmt.Printf("Building %s project %s\n", p.Language, p.Name)
-	return nil
+	return buildProject(&golangProjectItems)
 }
