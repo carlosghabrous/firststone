@@ -52,18 +52,20 @@ var pythonProjectItems = []ProjectItem{
 		Content:    "test"},
 }
 
-var pythonProject = PythonProject{Name: "", Language: python, ProjectItems: pythonProjectItems}
+var pythonProject = PythonProject{Language: python, ProjectItems: pythonProjectItems}
 
 func init() {
-	RegisterLanguage(python, pythonProject)
+	RegisterLanguage(python, &pythonProject)
 }
 
-func (p PythonProject) CheckNamingConventions(name string) error {
-	fmt.Printf("Checking naming conventions for project %s\n", name)
+func (p *PythonProject) CheckNamingConventions(name string) error {
+	//TODO: after checking conventions are ok, assign name and return nil
+	p.Name = name
+	fmt.Printf("Naming conventions for project %s OK\n", p.Name)
 	return nil
 }
 
-func (p PythonProject) Build() (err error) {
+func (p *PythonProject) Build() (err error) {
 
 	for _, pItem := range pythonProjectItems {
 

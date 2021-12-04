@@ -15,18 +15,19 @@ var golangProjectItems = []ProjectItem{
 		Content:    ReadmeContent},
 }
 
-var golangProject = GolangProject{Name: "", Language: golang, ProjectItems: golangProjectItems}
+var golangProject = GolangProject{Language: golang, ProjectItems: golangProjectItems}
 
 func init() {
-	RegisterLanguage(golang, golangProject)
+	RegisterLanguage(golang, &golangProject)
 }
 
-func (p GolangProject) CheckNamingConventions(name string) error {
-	fmt.Printf("Checking naming conventions for project %s\n", name)
+func (p *GolangProject) CheckNamingConventions(name string) error {
+	p.Name = name
+	fmt.Printf("Naming conventions for project %s OK\n", p.Name)
 	return nil
 }
 
-func (p GolangProject) Build() error {
+func (p *GolangProject) Build() error {
 	fmt.Printf("Building %s project %s\n", p.Language, p.Name)
 	return nil
 }
