@@ -4,7 +4,7 @@ import "testing"
 
 const language = "some_language"
 
-var someLanguageProject = Project{}
+var someLanguageProject = PythonProject{}
 
 func cleanUpRegistry() func() {
 	return func() {
@@ -55,18 +55,5 @@ func TestLanguageSupported(t *testing.T) {
 	err := LanguageSupported(language)
 	if err != nil {
 		t.Fatalf("Language %s has already been registered (%e)\n", language, err)
-	}
-}
-
-func TestGetProject(t *testing.T) {
-	projectName := "a_name"
-	_ = RegisterLanguage(language, &someLanguageProject)
-	cleanup := cleanUpRegistry()
-	defer cleanup()
-
-	project := GetProject(language, projectName)
-
-	if project.Name != projectName {
-		t.Fatalf("Project name not correctly set!")
 	}
 }
