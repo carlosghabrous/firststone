@@ -12,7 +12,7 @@ var golangProjectItems = []ProjectItem{
 	{Name: "README.md",
 		Parent:     "",
 		Permission: 0644,
-		Content:    ReadmeContent},
+		Content:    ""},
 }
 
 var golangProject = GolangProject{Language: golang, ProjectItems: golangProjectItems}
