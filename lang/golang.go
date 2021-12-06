@@ -28,5 +28,5 @@ func (p *GolangProject) CheckNamingConventions(name string) error {
 }
 
 func (p *GolangProject) Build() error {
-	return buildProject(&golangProjectItems)
+	return buildProject(&golangProjectItems, nil)
 }

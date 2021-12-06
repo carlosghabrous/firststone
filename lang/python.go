@@ -2,7 +2,7 @@ package lang
 
 import (
 	"fmt"
-	"os"
+	"strings"
 )
 
 type PythonProject Project
@@ -97,7 +97,7 @@ setup(
 var initContent = `"""
 Documentation for the ` +
 	projectNameUnderscore +
-	`package
+	` package
 
 """
 
@@ -114,7 +114,7 @@ import ` +
 
 
 def test_version():
-    assert test_accpy.__version__ is not None`
+    assert ` + projectNameUnderscore + `.__version__ is not None`
 
 var pythonProjectItems = []ProjectItem{
 	{Name: "README.md",
@@ -125,25 +125,16 @@ var pythonProjectItems = []ProjectItem{
 		Parent:     ".",
 		Permission: 0644,
 		Content:    setupContent},
-	{Name: projectNameUnderscore,
-		Parent:     ".",
-		Permission: os.ModeDir | 0755,
-		Content:    ""},
 	{Name: "__init__.py",
-		Parent:     ".",
+		Parent:     projectNameUnderscore,
 		Permission: 0644,
 		Content:    initContent},
-	{Name: "tests",
-		Parent:     projectNameUnderscore,
-		Permission: os.ModeDir | 0755,
-		Content:    "",
-	},
 	{Name: "__init__.py",
 		Parent:     "tests",
 		Permission: 0644,
 		Content:    "",
 	},
-	{Name: "test_" + projectNameUnderscore,
+	{Name: "test_" + projectNameUnderscore + ".py",
 		Parent:     "tests",
 		Permission: 0644,
 		Content:    testContent},
@@ -163,5 +154,7 @@ func (p *PythonProject) CheckNamingConventions(name string) error {
 }
 
 func (p *PythonProject) Build() (err error) {
-	return buildProject(&pythonProjectItems)
+	//TODO: replace with project name
+	replacer := strings.NewReplacer(projectNameUnderscore, p.Name, projectNameDash, p.Name)
+	return buildProject(&pythonProjectItems, replacer)
 }
