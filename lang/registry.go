@@ -3,6 +3,8 @@ package lang
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 var languageRegistry Registry
@@ -37,15 +39,21 @@ func GetProject(language string) ProjectBuilder {
 	return project
 }
 
-func buildProject(projectItems *[]ProjectItem) (err error) {
+func buildProject(projectItems *[]ProjectItem, replacer *strings.Replacer) (err error) {
 	for _, pItem := range *projectItems {
 
-		if pItem.Permission.IsDir() {
-			err = createDir(&pItem)
+		pItem.Name = (*replacer).Replace(pItem.Name)
+		pItem.Parent = (*replacer).Replace(pItem.Parent)
+		pItem.Content = (*replacer).Replace(pItem.Content)
 
-		} else {
-			err = createContent(pItem.Name, pItem.Content, pItem.Permission)
+		if _, err = os.Stat(pItem.Parent); os.IsNotExist(err) {
+			err = createDir(&pItem)
+			if err != nil {
+				fmt.Errorf("could not create directory %s\n", pItem.Parent)
+			}
 		}
+
+		err = createContent(&pItem)
 
 		if err != nil {
 			return err
@@ -56,23 +64,23 @@ func buildProject(projectItems *[]ProjectItem) (err error) {
 }
 
 func createDir(pItem *ProjectItem) error {
-	if err := os.Mkdir(pItem.Name, pItem.Permission); err != nil {
+	if err := os.Mkdir(pItem.Parent, os.ModeDir|0755); err != nil {
 		return fmt.Errorf("could not create directory %s: %v", pItem.Name, err)
 	}
 
 	return nil
 }
 
-func createContent(name, Content string, Permission os.FileMode) error {
-	fh, err := os.Create(name)
+func createContent(pItem *ProjectItem) error {
+	fh, err := os.Create(filepath.Join(pItem.Parent, pItem.Name))
 	if err != nil {
-		return fmt.Errorf("could not create file %s: %v", name, err)
+		return fmt.Errorf("could not create file %s: %v", pItem.Name, err)
 	}
 	defer fh.Close()
 
-	_, err = fh.WriteString(Content)
+	_, err = fh.WriteString(pItem.Content)
 	if err != nil {
-		return fmt.Errorf("could not write to file %s: %v", name, err)
+		return fmt.Errorf("could not write to file %s: %v", pItem.Name, err)
 	}
 
 	return nil
