@@ -14,7 +14,9 @@ const (
 )
 
 const mainContent = `package main 
+
 func main() {
+
 }`
 
 var golangProjectItems = []ProjectItem{
