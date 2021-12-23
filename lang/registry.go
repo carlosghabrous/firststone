@@ -64,7 +64,7 @@ func buildProject(projectItems *[]ProjectItem, replacer *strings.Replacer) (err 
 }
 
 func createDir(pItem *ProjectItem) error {
-	if err := os.Mkdir(pItem.Parent, os.ModeDir|0755); err != nil {
+	if err := os.MkdirAll(pItem.Parent, os.ModeDir|0755); err != nil {
 		return fmt.Errorf("could not create directory %s: %v", pItem.Name, err)
 	}
 

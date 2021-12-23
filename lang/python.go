@@ -154,7 +154,6 @@ func (p *PythonProject) CheckNamingConventions(name string) error {
 }
 
 func (p *PythonProject) Build() (err error) {
-	//TODO: replace with project name
 	replacer := strings.NewReplacer(projectNameUnderscore, p.Name, projectNameDash, p.Name)
 	return buildProject(&pythonProjectItems, replacer)
 }
