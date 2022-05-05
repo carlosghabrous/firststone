@@ -43,3 +43,8 @@ The aim of first stone is just that, laying the first stone of a project quickly
     firststone init --help
     ```
 
+## TODO
+* Add tests per module, if possible
+* Add check: parent directory's name should be = to project's name
+* Add content to golang project 
+* Check whether variables and functions/methods are more public than needed
