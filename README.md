@@ -1,6 +1,7 @@
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/carlosghabrous/firststone/Go)
+
 # firststone
 A simple util to automate the creation of projects in different languages
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/carlosghabrous/firststone/Go)
 
 First Stone is a utility that automates the creation of project's directories and files for certain programming languages. 
 Current supported languages are: Python, Go. 
